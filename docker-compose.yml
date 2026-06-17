@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./uploads:/app/uploads
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - PORT=8000
+      - HOST=0.0.0.0
+    depends_on:
+      - db
+
+  # React + Vite Frontend Service (served via Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  # Fallback PostgreSQL Local Database Container
+  db:
+    image: postgres:15-alpine
+    container_name: vastrasilai_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

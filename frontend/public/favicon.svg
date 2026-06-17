@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <!-- Main Scissors shape -->
+  <g filter="url(#glow)">
+    <!-- Left Loop -->
+    <path d="M120 180 C80 180, 50 210, 50 250 C50 290, 80 320, 120 320 C160 320, 180 290, 180 250 C180 210, 160 180, 120 180 Z M120 215 C135 215, 145 230, 145 250 C145 270, 135 285, 120 285 C105 285, 95 270, 95 250 C95 230, 105 215, 120 215 Z" fill="url(#purpleGrad)" />
+    <!-- Right Loop -->
+    <path d="M120 80 C80 80, 50 110, 50 150 C50 190, 80 220, 120 220 C160 220, 180 190, 180 150 C180 110, 160 80, 120 80 Z M120 115 C135 115, 145 130, 145 150 C145 170, 135 185, 120 185 C105 185, 95 170, 95 150 C95 130, 105 115, 120 115 Z" fill="url(#purpleGrad)" transform="translate(0, 130)" />
+    <!-- Pivot Pin -->
+    <circle cx="230" cy="215" r="14" fill="#ffffff" />
+    <!-- Blades -->
+    <path d="M220 205 L450 120 L230 225 Z" fill="url(#purpleGrad)" />
+    <path d="M220 225 L450 310 L230 205 Z" fill="url(#purpleGrad)" />
+  </g>
+</svg>
