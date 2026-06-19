@@ -8,11 +8,28 @@ export const translations = {
     tailorPortal: "Tailor Portal",
     enterTailor: "Enter Tailor Workspace",
     enterCustomer: "Enter Customer Portal",
+    navFeatures: "Features",
+    navAbout: "About Us",
+    aboutTitle: "Crafting the Future of Tailoring",
+    aboutDesc1: "At VastraSilai, we believe traditional tailoring is an art form that deserves the best modern tools. We build smart digital solutions designed specifically for local tailors to help them manage measurements, organize orders, and communicate effortlessly with their clients.",
+    aboutDesc2: "Our mission is to empower local businesses with technology that simplifies operations, increases customer satisfaction, and drives growth, all while keeping the cultural heritage of custom tailoring alive.",
+    aboutMission: "Our Mission",
+    aboutVision: "Our Vision",
+    aboutMissionDesc: "To digitize every tailor's ledger, replacing paper registers with instant cloud-connected records.",
+    aboutVisionDesc: "To build a seamless stitching network that makes custom tailoring accessible, fast, and transparent.",
     
     // Landing Page
-    heroTitle: "Modernize Your Tailoring Shop",
-    withText: "With",
-    heroSubtitle: "Ditch the old notebooks! Manage customer measurements, payment status, and order schedules online. Automatically notify customers via WhatsApp reminders.",
+    heroTitle: "Making Every Stitch",
+    heroTitleAccent: "Intelligent.",
+    heroSubtitle: "The all-in-one platform for modern tailors — orders, measurements, customers and insights, beautifully unified.",
+    enterTailorDesc: "Access tailor dashboard, measurements charts, orders registry",
+    enterCustomerDesc: "Track stitching progress, delivery dates, measurements and collections",
+    smartMeasurements: "Smart Measurements",
+    smartMeasurementsSub: "Accurate & Effortless",
+    orderManagement: "Order Management",
+    orderManagementSub: "Organize with Ease",
+    smartNotifications: "Smart Notifications",
+    smartNotificationsSub: "Stay Updated, Always",
     customerPortalPrompt: "Are you a Customer? Track your orders in the Customer Portal →",
     feature1Title: "Digital Measurements",
     feature1Desc: "Digitally record chest, waist, and sleeve lengths. Access customer profile history in one tap.",
@@ -125,6 +142,9 @@ export const translations = {
     measurementsSaved: "Measurements updated successfully!",
 
     // Orders
+    totalOrders: "Total Orders",
+    pendingStitching: "Pending Stitching",
+    remainingBalance: "Remaining Balance",
     orderList: "Order Book",
     createOrder: "New Order",
     clothType: "Garment Type",
@@ -153,6 +173,9 @@ export const translations = {
 
     // Payments Page
     paymentLedger: "Payment History",
+    totalCollected: "Total Collected",
+    cashCollected: "Cash Collections",
+    onlineCollected: "Digital Collections",
     addInstallment: "Record Installment",
     paymentMethod: "Payment Method",
     cash: "Cash",
@@ -193,7 +216,11 @@ export const translations = {
     triggerDailyNotifications: "Trigger Daily WhatsApp Run",
     sendCustomWhatsApp: "Send Manual WhatsApp",
     messageBody: "Message Body",
-    sendBtn: "Send WhatsApp"
+    sendBtn: "Send WhatsApp",
+    dailyScheduler: "Daily Report Scheduler",
+    dailySchedulerDesc: "Sends an automated morning summary of deliveries and payments directly to your WhatsApp at 08:00 AM.",
+    triggerSuccess: "Daily notifications batch execution triggered successfully!",
+    messagePreview: "Daily Report Template Preview"
   },
   hi: {
     // Common
@@ -204,11 +231,28 @@ export const translations = {
     tailorPortal: "दर्जी पोर्टल",
     enterTailor: "दर्जी वर्कस्पेस में प्रवेश करें",
     enterCustomer: "ग्राहक पोर्टल में प्रवेश करें",
+    navFeatures: "विशेषताएं",
+    navAbout: "हमारे बारे में",
+    aboutTitle: "सिलाई के भविष्य का निर्माण",
+    aboutDesc1: "वस्त्रसिलाई में, हमारा मानना है कि पारंपरिक सिलाई एक कला है जो सर्वोत्तम आधुनिक उपकरणों की हकदार है। हम विशेष रूप से स्थानीय दर्जियों के लिए डिज़ाइन किए गए स्मार्ट डिजिटल समाधान बनाते हैं ताकि उन्हें माप प्रबंधित करने, ऑर्डर व्यवस्थित करने और अपने ग्राहकों के साथ सहजता से संवाद करने में मदद मिल सके।",
+    aboutDesc2: "हमारा मिशन स्थानीय व्यवसायों को ऐसी तकनीक के साथ सशक्त बनाना है जो संचालन को सरल बनाती है, ग्राहक संतुष्टि को बढ़ाती है, और विकास को गति देती है, साथ ही कस्टम सिलाई की सांस्कृतिक विरासत को भी जीवित रखती है।",
+    aboutMission: "हमारा मिशन",
+    aboutVision: "हमारा दृष्टिकोण",
+    aboutMissionDesc: "हर दर्जी के बहीखाते को डिजिटल बनाना, कागजी रजिस्टरों को तत्काल क्लाउड-कनेक्टेड रिकॉर्ड से बदलना।",
+    aboutVisionDesc: "एक सहज सिलाई नेटवर्क बनाना जो कस्टम सिलाई को सुलभ, तेज़ और पारदर्शी बनाता है।",
     
     // Landing Page
-    heroTitle: "अपनी सिलाई की दुकान को आधुनिक बनाएं",
-    withText: "के साथ",
-    heroSubtitle: "पुरानी कॉपियों को छोड़ें! ग्राहकों के माप, भुगतान की स्थिति और ऑर्डर शेड्यूल को ऑनलाइन प्रबंधित करें। व्हाट्सएप के माध्यम से ग्राहकों को स्वचालित रूप से सूचित करें।",
+    heroTitle: "हर सिलाई को बनाएं",
+    heroTitleAccent: "बुद्धिमान।",
+    heroSubtitle: "आधुनिक दर्जी के लिए ऑल-इन-वन प्लेटफ़ॉर्म — ऑर्डर, माप, ग्राहक और अंतर्दृष्टि, खूबसूरती से एकीकृत।",
+    enterTailorDesc: "दर्जी डैशबोर्ड, माप चार्ट, ऑर्डर रजिस्टर तक पहुंचें",
+    enterCustomerDesc: "सिलाई की प्रगति, डिलीवरी की तारीखें, माप और संग्रह को ट्रैक करें",
+    smartMeasurements: "स्मार्ट माप",
+    smartMeasurementsSub: "सटीक और सरल",
+    orderManagement: "ऑर्डर प्रबंधन",
+    orderManagementSub: "आसानी से व्यवस्थित करें",
+    smartNotifications: "स्मार्ट सूचनाएं",
+    smartNotificationsSub: "हमेशा अपडेट रहें",
     customerPortalPrompt: "क्या आप ग्राहक हैं? ग्राहक पोर्टल में अपने ऑर्डर ट्रैक करें →",
     feature1Title: "डिजिटल माप",
     feature1Desc: "छाती, कमर और आस्तीन की लंबाई को डिजिटल रूप से रिकॉर्ड करें। एक टैप में ग्राहक इतिहास देखें।",
@@ -321,6 +365,9 @@ export const translations = {
     measurementsSaved: "माप सफलतापूर्वक अपडेट किया गया!",
 
     // Orders
+    totalOrders: "कुल ऑर्डर",
+    pendingStitching: "लंबित सिलाई",
+    remainingBalance: "शेष राशि",
     orderList: "ऑर्डर बुक",
     createOrder: "नया ऑर्डर",
     clothType: "पोशाक का प्रकार",
@@ -349,6 +396,9 @@ export const translations = {
 
     // Payments Page
     paymentLedger: "भुगतान इतिहास",
+    totalCollected: "कुल संग्रहित",
+    cashCollected: "नकद संग्रह",
+    onlineCollected: "डिजिटल संग्रह",
     addInstallment: "किस्त दर्ज करें",
     paymentMethod: "भुगतान का प्रकार",
     cash: "नकद",
@@ -389,7 +439,11 @@ export const translations = {
     triggerDailyNotifications: "दैनिक व्हाट्सएप चलाएं",
     sendCustomWhatsApp: "मैनुअल व्हाट्सएप भेजें",
     messageBody: "संदेश सामग्री",
-    sendBtn: "व्हाट्सएप भेजें"
+    sendBtn: "व्हाट्सएप भेजें",
+    dailyScheduler: "दैनिक रिपोर्ट शेड्यूलर",
+    dailySchedulerDesc: "सुबह 08:00 बजे दर्जी के व्हाट्सएप पर सीधे डिलीवरी और भुगतान का एक स्वचालित सारांश भेजता है।",
+    triggerSuccess: "दैनिक सूचनाएं बैच निष्पादन सफलतापूर्वक शुरू किया गया!",
+    messagePreview: "दैनिक रिपोर्ट संदेश का पूर्वावलोकन"
   },
   te: {
     // Common
@@ -400,11 +454,28 @@ export const translations = {
     tailorPortal: "దర్జీ పోర్టల్",
     enterTailor: "టైలర్ వర్క్‌స్పేస్‌లోకి ప్రవేశించండి",
     enterCustomer: "కస్టమర్ పోర్టల్‌లోకి ప్రవేశించండి",
+    navFeatures: "ఫీచర్లు",
+    navAbout: "మా గురించి",
+    aboutTitle: "టైలరింగ్ భవిష్యత్తును రూపొందించడం",
+    aboutDesc1: "వస్త్రసిలై వద్ద, సాంప్రదాయ టైలరింగ్ అనేది ఒక కళారూపం అని మేము నమ్ముతున్నాము, దీనికి ఉత్తమమైన ఆధునిక సాధనాలు అవసరం. స్థానిక టైలర్లు కొలతలను నిర్వహించడానికి, ఆర్డర్లను నిర్వహించడానికి మరియు వారి క్లయింట్లతో సులభంగా కమ్యూనికేట్ చేయడానికి మేము ప్రత్యేకంగా డిజైన్ చేసిన స్మార్ట్ డిజిటల్ పరిష్కారాలను నిర్మిస్తాము.",
+    aboutDesc2: "కస్టమ్ టైలరింగ్ యొక్క సాంస్కృతిక వారసత్వాన్ని సజీవంగా ఉంచుతూ, కార్యకలాపాలను సులభతరం చేసే, కస్టమర్ సంతృప్తిని పెంచే మరియు వృద్ధిని నడిపించే సాంకేతికతతో స్థానిక వ్యాపారాలను బలోపేతం చేయడమే మా లక్ష్యం.",
+    aboutMission: "మా లక్ష్యం",
+    aboutVision: "మా విజన్",
+    aboutMissionDesc: "ప్రతి టైలర్ లెడ్జర్‌ను డిజిటలైజ్ చేయడం, పేపర్ రిజిస్టర్‌ల స్థానంలో తక్షణ క్లౌడ్-కనెక్ట్ రికార్డులను ఉంచడం.",
+    aboutVisionDesc: "కస్టమ్ టైలరింగ్‌ను అందుబాటులో ఉంచే, వేగవంతమైన మరియు పారదర్శకమైన అనుసంధాన నెట్‌వర్క్‌ను నిర్మించడం.",
     
     // Landing Page
-    heroTitle: "మీ టైలరింగ్ షాప్‌ను ఆధునీకరించండి",
-    withText: "తో",
-    heroSubtitle: "పాత రాత పుస్తకాలను పక్కన పెట్టండి! కస్టమర్ల కొలతలు, చెల్లింపుల వివరాలు మరియు ఆర్డర్ల షెడ్యూల్‌ను ఆన్‌లైన్‌లో నిర్వహించండి. కస్టమర్లకు వాట్సాప్ ద్వారా స్వయంచాలక అలర్ట్‌లు పంపండి.",
+    heroTitle: "ప్రతి కుట్టును",
+    heroTitleAccent: "తెలివైనదిగా చేయడం.",
+    heroSubtitle: "ఆధునిక టైలర్‌ల కోసం ఆల్-ఇన్-వన్ ప్లాట్‌ఫారమ్ — ఆర్డర్‌లు, కొలతలు, కస్టమర్‌లు మరియు ఆర్డర్ వివరాలు, అందంగా ఏకీకృతం చేయబడ్డాయి.",
+    enterTailorDesc: "టైలర్ డాష్‌బోర్డ్, కొలతల చార్ట్‌లు, ఆర్డర్‌ల రిజిస్టర్‌ను యాక్సెస్ చేయండి",
+    enterCustomerDesc: "కుట్టు పురోగతి, డెలివరీ తేదీలు, కొలతలు మరియు సేకరణలను ట్రాక్ చేయండి",
+    smartMeasurements: "స్మార్ట్ కొలతలు",
+    smartMeasurementsSub: "ఖచ్చితమైన & సులభమైన",
+    orderManagement: "ఆర్డర్ నిర్వహణ",
+    orderManagementSub: "సులభంగా నిర్వహించడం",
+    smartNotifications: "స్మార్ట్ నోటిఫికేషన్‌లు",
+    smartNotificationsSub: "ఎల్లప్పుడూ అప్‌డేట్ గా ఉండండి",
     customerPortalPrompt: "మీరు కస్టమరా? కస్టమర్ పోర్టల్‌లో మీ ఆర్డర్లను ట్రాక్ చేయండి →",
     feature1Title: "డిజిటల్ కొలతలు",
     feature1Desc: "ఛాతీ, నడుము మరియు చేతుల కొలతలను డిజిటల్‌గా రికార్డ్ చేయండి. ఒక ట్యాప్‌లో కస్టమర్ చరిత్రను చూడండి.",
@@ -517,6 +588,9 @@ export const translations = {
     measurementsSaved: "కొలతలు విజయవంతంగా నవీకరించబడ్డాయి!",
 
     // Orders
+    totalOrders: "మొత్తం ఆర్డర్లు",
+    pendingStitching: "పెండింగ్ కుట్టుపని",
+    remainingBalance: "మిగిలిన బ్యాలెన్స్",
     orderList: "ఆర్డర్ బుక్",
     createOrder: "కొత్త ఆర్డర్",
     clothType: "దుస్తుల రకం",
@@ -545,6 +619,9 @@ export const translations = {
 
     // Payments Page
     paymentLedger: "చెల్లింపుల చరిత్ర",
+    totalCollected: "మొత్తం వసూలు",
+    cashCollected: "నగదు వసూళ్లు",
+    onlineCollected: "డిజిటల్ వసూళ్లు",
     addInstallment: "కొత్త ఇన్స్టాల్మెంట్",
     paymentMethod: "చెల్లింపు పద్ధతి",
     cash: "నగదు",
@@ -585,6 +662,10 @@ export const translations = {
     triggerDailyNotifications: "డైలీ వాట్సాప్ పంపించు",
     sendCustomWhatsApp: "మాన్యువల్ వాట్సాప్ పంపించు",
     messageBody: "సందేశం సమాచారం",
-    sendBtn: "వాట్సాప్ పంపించు"
+    sendBtn: "వాట్సాప్ పంపించు",
+    dailyScheduler: "రోజువారీ నివేదిక షెడ్యూలర్",
+    dailySchedulerDesc: "ప్రతిరోజూ ఉదయం 08:00 గంటలకు దర్జీల వాట్సాప్‌కు నేరుగా డెలివరీలు మరియు బ్యాలెన్స్ వసూళ్ల సారాంశాన్ని పంపుతుంది.",
+    triggerSuccess: "రోజువారీ నోటిఫికేషన్‌ల రన్ విజయవంతంగా ప్రారంభించబడింది!",
+    messagePreview: "రోజువారీ నివేదిక సందేశం ప్రివ్యూ"
   }
 };

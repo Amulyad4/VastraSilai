@@ -73,12 +73,12 @@ export default function Dashboard({ onNavigate }) {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="font-heading text-3xl font-extrabold text-white tracking-tight">{t('dashboard')}</h2>
-          <p className="text-gray-400 text-sm">{t('tagline')}</p>
+          <p className="text-purple-600/70 dark:text-purple-400 font-medium text-sm mt-1">{t('tagline')}</p>
         </div>
       </div>
 
       {/* Summary Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 dashboard-stats-grid">
         
         {/* Card 1: Customers */}
         <div className="glass-card p-6 rounded-2xl text-left border border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[140px] cursor-pointer" onClick={() => onNavigate('tailor_customers')}>
@@ -148,7 +148,7 @@ export default function Dashboard({ onNavigate }) {
             </div>
             <button
               onClick={() => onNavigate('tailor_deliveries')}
-              className="text-xs text-purple-400 hover:text-purple-300 font-semibold hover:underline"
+              className="text-sm bg-purple-600/10 hover:bg-purple-600/25 text-purple-600 dark:text-purple-400 font-black px-4 py-2 rounded-xl transition-all duration-250 hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               View Full Schedule
             </button>

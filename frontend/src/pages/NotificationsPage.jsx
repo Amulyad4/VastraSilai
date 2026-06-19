@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLanguage } from '../context/LanguageContext';
-import { MessageSquare, Send, CheckCircle, AlertCircle, History, User } from 'lucide-react';
-import { API_URL } from '../context/AuthContext';
+import { MessageSquare, Send, CheckCircle, AlertCircle, History, User, Clock, Play } from 'lucide-react';
+import { useAuth, API_URL } from '../context/AuthContext';
 
 const parseDateTime = (dateStr) => {
   if (!dateStr) return new Date();
@@ -14,9 +14,12 @@ const parseDateTime = (dateStr) => {
 
 export default function NotificationsPage() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [logs, setLogs] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [scheduleData, setScheduleData] = useState({ today: [], overdue: [], calendar: [] });
   const [loading, setLoading] = useState(true);
+  const [schedulerLoading, setSchedulerLoading] = useState(false);
 
   // Form states
   const [selectedCustId, setSelectedCustId] = useState('');
@@ -50,10 +53,19 @@ export default function NotificationsPage() {
     }
   };
 
+  const fetchSchedule = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/deliveries/schedule`);
+      setScheduleData(res.data);
+    } catch (err) {
+      console.error("Error fetching delivery schedule:", err);
+    }
+  };
+
   useEffect(() => {
     const initPage = async () => {
       setLoading(true);
-      await Promise.all([fetchLogs(), fetchCustomers()]);
+      await Promise.all([fetchLogs(), fetchCustomers(), fetchSchedule()]);
       setLoading(false);
     };
     initPage();
@@ -102,6 +114,79 @@ export default function NotificationsPage() {
     }
   };
 
+  const handleTriggerDailyRun = async () => {
+    setSchedulerLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const res = await axios.post(`${API_URL}/notifications/trigger-daily-run`);
+      setSuccess(t('triggerSuccess'));
+      await fetchLogs(); // Reload logs
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to trigger daily WhatsApp run');
+    } finally {
+      setSchedulerLoading(false);
+    }
+  };
+
+  const getSimulatedMessage = () => {
+    const todayCount = scheduleData.today ? scheduleData.today.length : 0;
+    const expectedCollection = scheduleData.today ? scheduleData.today.reduce((sum, o) => sum + (o.balance_amount || 0), 0) : 0;
+    const overdueCount = scheduleData.overdue ? scheduleData.overdue.length : 0;
+    const totalPendingBalance = scheduleData.calendar ? scheduleData.calendar.reduce((sum, item) => sum + (item.balance > 0 ? item.balance : 0), 0) : 0;
+
+    const tailorName = user?.name || 'Tailor';
+    const lang = user?.language || 'en';
+
+    if (lang === 'hi') {
+      let msg = `शुभ प्रभात, ${tailorName}!\n\nवस्त्रसिलाई दैनिक रिपोर्ट:\n`;
+      msg += `• आज की डिलीवरी: ${todayCount} (अपेक्षित संग्रह: ₹${expectedCollection})\n`;
+      msg += `• विलंबित आर्डर: ${overdueCount}\n`;
+      msg += `• कुल लंबित संग्रह: ₹${totalPendingBalance}\n\n`;
+      
+      if (todayCount > 0) {
+        msg += "आज की डिलीवरी सूची:\n";
+        scheduleData.today.forEach((o, idx) => {
+          msg += `${idx + 1}. ${o.customer?.name || 'ग्राहक'} - शेष ₹${o.balance_amount}\n`;
+        });
+      } else {
+        msg += "आज कोई डिलीवरी निर्धारित नहीं है।";
+      }
+      return msg;
+    } else if (lang === 'te') {
+      let msg = `శుభోదయం, ${tailorName}!\n\nవస్త్రసిలై రోజువారీ నివేదిక:\n`;
+      msg += `• ఈరోజు డెలివరీలు: ${todayCount} (ఆశించిన వసూలు: ₹${expectedCollection})\n`;
+      msg += `• గడువు ముగిసిన ఆర్డర్లు: ${overdueCount}\n`;
+      msg += `• మొత్తం బ్యాలెన్స్ వసూళ్లు: ₹${totalPendingBalance}\n\n`;
+      
+      if (todayCount > 0) {
+        msg += "ఈరోజు డెలివరీల జాబితా:\n";
+        scheduleData.today.forEach((o, idx) => {
+          msg += `${idx + 1}. ${o.customer?.name || 'కస్టమర్'} - బ్యాలెన్స్ ₹${o.balance_amount}\n`;
+        });
+      } else {
+        msg += "ఈరోజు ఎటువంటి డెలివరీలు షెడ్యూల్ చేయబడలేదు.";
+      }
+      return msg;
+    } else {
+      let msg = `Good Morning, ${tailorName}!\n\nVastraSilai Morning Summary:\n`;
+      msg += `• Today's Deliveries: ${todayCount} (Expected Collection: ₹${expectedCollection})\n`;
+      msg += `• Overdue Orders: ${overdueCount}\n`;
+      msg += `• Total Outstanding Balance: ₹${totalPendingBalance}\n\n`;
+      
+      if (todayCount > 0) {
+        msg += "Today's Delivery List:\n";
+        scheduleData.today.forEach((o, idx) => {
+          msg += `${idx + 1}. ${o.customer?.name || 'Customer'} (Balance ₹${o.balance_amount})\n`;
+        });
+      } else {
+        msg += "No deliveries scheduled for today.";
+      }
+      return msg;
+    }
+  };
+
   return (
     <div className="space-y-8 animate-fade-in text-left">
       {/* Title */}
@@ -126,86 +211,152 @@ export default function NotificationsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
-        {/* Column 1: Send Message form */}
-        <div className="glass-panel p-6 rounded-3xl border border-white/5 space-y-4">
-          <div className="flex items-center space-x-2 border-b border-white/5 pb-3">
-            <MessageSquare className="w-5 h-5 text-purple-400" />
-            <h3 className="text-lg font-bold text-white font-heading">{t('sendCustomWhatsApp')}</h3>
-          </div>
-
-          {customers.length === 0 ? (
-            <p className="text-sm text-gray-500 py-6 text-center">Add customers first to trigger alerts.</p>
-          ) : (
-            <form onSubmit={handleSendNotification} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Customer</label>
-                <select
-                  value={selectedCustId}
-                  onChange={(e) => setSelectedCustId(e.target.value)}
-                  className="w-full glass-input px-4 py-2.5 rounded-xl text-sm cursor-pointer"
-                >
-                  {customers.map(c => (
-                    <option key={c.id} value={c.id} className="bg-gray-950 text-white">
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+        {/* Column 1: Daily Scheduler and Custom Message form */}
+        <div className="space-y-6">
+          
+          {/* Card 1: Daily Scheduler Controller */}
+          <div className="glass-panel p-6 rounded-3xl border border-white/5 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/5 pb-3">
+              <div className="flex items-center space-x-2">
+                <Clock className="w-5 h-5 text-emerald-400 animate-pulse" />
+                <h3 className="text-lg font-bold text-white font-heading">{t('dailyScheduler')}</h3>
               </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Template Style</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { code: 'general', label: 'General' },
-                    { code: 'delivery', label: 'Delivery' },
-                    { code: 'payment', label: 'Payment' }
-                  ].map(t => (
-                    <button
-                      key={t.code}
-                      type="button"
-                      onClick={() => setTemplate(t.code)}
-                      className={`py-1.5 rounded-lg border text-xs font-semibold transition ${
-                        template === t.code
-                          ? 'bg-purple-600/10 border-purple-500 text-purple-300'
-                          : 'border-white/5 bg-white/5 text-gray-400'
-                      }`}
-                    >
-                      {t.label}
-                    </button>
-                  ))}
+              <span className="flex h-2.5 w-2.5 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+            </div>
+            
+            <div className="space-y-3">
+              <p className="text-xs text-gray-400 leading-relaxed">
+                {t('dailySchedulerDesc')}
+              </p>
+              
+              <div className="p-3 bg-gray-950/65 rounded-xl border border-white/5 space-y-1">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-gray-500">Auto Trigger Time:</span>
+                  <span className="text-gray-300 font-mono">08:00 AM Daily</span>
+                </div>
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-gray-500">Recipient Phone:</span>
+                  <span className="text-emerald-400 font-mono">{user?.phone || 'Not configured'}</span>
                 </div>
               </div>
 
+              {/* Message Preview */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Alert Subject / Title</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full glass-input px-4 py-2.5 rounded-xl text-sm"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('messageBody')}</label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows="5"
-                  className="w-full glass-input px-4 py-2.5 rounded-xl text-sm"
-                />
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('messagePreview')}</label>
+                <div className="whatsapp-wallpaper p-3 rounded-2xl border border-white/5 min-h-[140px] flex flex-col justify-end text-left relative overflow-hidden">
+                  <div className="bg-emerald-600/90 text-white rounded-2xl rounded-tr-none p-3 shadow-md max-w-[90%] self-end relative animate-fade-in">
+                    <p className="text-[9px] font-bold text-emerald-300 tracking-wider uppercase mb-1">WhatsApp Alert</p>
+                    <p className="text-[11px] font-mono whitespace-pre-wrap leading-relaxed text-left">
+                      {getSimulatedMessage()}
+                    </p>
+                    <div className="absolute right-2 bottom-1 text-[8px] text-emerald-200">
+                      08:00 AM
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <button
-                type="submit"
-                disabled={btnLoading}
-                className="w-full neon-btn py-3 rounded-xl text-white font-bold flex items-center justify-center space-x-1.5"
+                type="button"
+                onClick={handleTriggerDailyRun}
+                disabled={schedulerLoading}
+                className="w-full neon-btn py-3 rounded-xl text-white font-bold flex items-center justify-center space-x-1.5 bg-emerald-600 hover:bg-emerald-500 border-emerald-500 shadow-emerald-500/20"
               >
-                {btnLoading ? <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"></div> : <Send className="w-4 h-4" />}
-                <span>{t('sendBtn')}</span>
+                {schedulerLoading ? (
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Play className="w-4 h-4" />
+                )}
+                <span>{t('triggerDailyNotifications')}</span>
               </button>
-            </form>
-          )}
+            </div>
+          </div>
+
+          {/* Card 2: Send Custom WhatsApp */}
+          <div className="glass-panel p-6 rounded-3xl border border-white/5 space-y-4">
+            <div className="flex items-center space-x-2 border-b border-white/5 pb-3">
+              <MessageSquare className="w-5 h-5 text-purple-400" />
+              <h3 className="text-lg font-bold text-white font-heading">{t('sendCustomWhatsApp')}</h3>
+            </div>
+
+            {customers.length === 0 ? (
+              <p className="text-sm text-gray-500 py-6 text-center">Add customers first to trigger alerts.</p>
+            ) : (
+              <form onSubmit={handleSendNotification} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Customer</label>
+                  <select
+                    value={selectedCustId}
+                    onChange={(e) => setSelectedCustId(e.target.value)}
+                    className="w-full glass-input px-4 py-2.5 rounded-xl text-sm cursor-pointer"
+                  >
+                    {customers.map(c => (
+                      <option key={c.id} value={c.id} className="bg-gray-950 text-white">
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Template Style</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { code: 'general', label: 'General' },
+                      { code: 'delivery', label: 'Delivery' },
+                      { code: 'payment', label: 'Payment' }
+                    ].map(t => (
+                      <button
+                        key={t.code}
+                        type="button"
+                        onClick={() => setTemplate(t.code)}
+                        className={`py-1.5 rounded-lg border text-xs font-semibold transition ${
+                          template === t.code
+                            ? 'bg-purple-600/10 border-purple-500 text-purple-300'
+                            : 'border-white/5 bg-white/5 text-gray-400'
+                        }`}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Alert Subject / Title</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full glass-input px-4 py-2.5 rounded-xl text-sm"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('messageBody')}</label>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows="5"
+                    className="w-full glass-input px-4 py-2.5 rounded-xl text-sm"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={btnLoading}
+                  className="w-full neon-btn py-3 rounded-xl text-white font-bold flex items-center justify-center space-x-1.5"
+                >
+                  {btnLoading ? <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"></div> : <Send className="w-4 h-4" />}
+                  <span>{t('sendBtn')}</span>
+                </button>
+              </form>
+            )}
+          </div>
+
         </div>
 
         {/* Column 2 & 3: Logs lists */}

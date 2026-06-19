@@ -1,0 +1,878 @@
+﻿diff --git a/frontend/src/pages/Home.jsx b/frontend/src/pages/Home.jsx
+index 486c1f1..29669b9 100644
+--- a/frontend/src/pages/Home.jsx
++++ b/frontend/src/pages/Home.jsx
+@@ -1,128 +1,790 @@
+-import React from 'react';
++import React, { useState, useEffect } from 'react';
+ import { useLanguage } from '../context/LanguageContext';
+-import { useAuth } from '../context/AuthContext';
+-import { Scissors, Users, Calendar, Award, MessageSquare, ArrowRight, Languages } from 'lucide-react';
++import { Scissors, Users, Calendar, Award, MessageSquare, ArrowRight, Sparkles, Sliders, Smartphone, Bell, Check, FileText, IndianRupee, BarChart3, Lock, Globe, ChevronDown, X } from 'lucide-react';
+ 
+ export default function Home({ onNavigate }) {
+   const { t, language, changeLanguage } = useLanguage();
+-  // Home page for tailor registration and login
++  
++  // Split the translated strings for cleaner stats display
++  const stichesSavedParts = t('stichesSaved').split(' ');
++  const stichesSavedNum = stichesSavedParts[0];
++  const stichesSavedText = stichesSavedParts.slice(1).join(' ');
++
++  const activeShopsParts = t('activeShops').split(' ');
++  const activeShopsNum = activeShopsParts[0];
++  const activeShopsText = activeShopsParts.slice(1).join(' ');
++
++  const deliveryRateParts = t('deliveryRate').split(' ');
++  const deliveryRateNum = deliveryRateParts[0];
++  const deliveryRateText = deliveryRateParts.slice(1).join(' ');
++
++  // Interactive Showcase States
++  const [chest, setChest] = useState(38);
++  const [waist, setWaist] = useState(34);
++  const [orderStatus, setOrderStatus] = useState(0); // 0: Booking, 1: Stitching, 2: Ready
++  const [whatsappSent, setWhatsappSent] = useState(false);
++  const [notificationDismissed, setNotificationDismissed] = useState(true);
++  const [showPushBanner, setShowPushBanner] = useState(false);
++
++  // New states for Language Dropdown and Pop-up Modal Details
++  const [isLangOpen, setIsLangOpen] = useState(false);
++  const [activeFeature, setActiveFeature] = useState(null);
++
++  // Language options
++  const langOptions = [
++    { code: 'en', label: 'English', short: 'EN' },
++    { code: 'hi', label: 'αñ╣αñ┐αñéαñªαÑÇ (Hindi)', short: 'αñ╣αñ┐αñ¿αÑìαñªαÑÇ' },
++    { code: 'te', label: 'α░ñα▒åα░▓α▒üα░ùα▒ü (Telugu)', short: 'α░ñα▒åα░▓α▒üα░ùα▒ü' }
++  ];
++
++  // Trigger WhatsApp Simulated Alert
++  const triggerWhatsappSimulation = () => {
++    setWhatsappSent(true);
++    setNotificationDismissed(false);
++    setShowPushBanner(true);
++  };
++
++  // Auto-dismiss push banner after 4.2 seconds
++  useEffect(() => {
++    if (showPushBanner) {
++      const timer = setTimeout(() => {
++        setShowPushBanner(false);
++      }, 4200);
++      return () => clearTimeout(timer);
++    }
++  }, [showPushBanner]);
++
++  // Auto-dismiss WhatsApp message bubble inside phone after 7 seconds
++  useEffect(() => {
++    if (whatsappSent && !notificationDismissed) {
++      const timer = setTimeout(() => {
++        setNotificationDismissed(true);
++      }, 7000);
++      return () => clearTimeout(timer);
++    }
++  }, [whatsappSent, notificationDismissed]);
++
++  // Feature data structured for clean popup and display management
++  const features = [
++    {
++      id: 1,
++      title: t('feature1Title'),
++      desc: t('feature1Desc'),
++      icon: <Users className="w-5 h-5" />,
++      color: "purple",
++      glowClass: "hover-glow-purple",
++      bgClass: "bg-purple-500/10 text-purple-400",
++      details: {
++        en: "Digitally record body dimensions (chest, waist, hip, shoulder, sleeves, neck) and associate them directly with customer profiles. Store visual sketches or references, and retrieve historical measurements instantly during re-orders.",
++        hi: "αñ╢αñ╛αñ░αÑÇαñ░αñ┐αñò αñ«αñ╛αñ¬αÑïαñé (αñ¢αñ╛αññαÑÇ, αñòαñ«αñ░, αñòαÑéαñ▓αÑìαñ╣αñ╛, αñòαñéαñºαñ╛, αñåαñ╕αÑìαññαÑÇαñ¿, αñùαñ▓αñ╛) αñòαÑï αñíαñ┐αñ£αñ┐αñƒαñ▓ αñ░αÑéαñ¬ αñ╕αÑç αñ░αñ┐αñòαÑëαñ░αÑìαñí αñòαñ░αÑçαñé αñöαñ░ αñ╕αÑÇαñºαÑç αñùαÑìαñ░αñ╛αñ╣αñò αñ¬αÑìαñ░αÑïαñ½αñ╛αñçαñ▓ αñ╕αÑç αñ£αÑïαñíαñ╝αÑçαñéαÑñ αñíαñ┐αñ£αñ╝αñ╛αñçαñ¿ αñ░αÑçαñûαñ╛αñÜαñ┐αññαÑìαñ░αÑïαñé αñòαÑï αñ╕αÑüαñ░αñòαÑìαñ╖αñ┐αññ αñ░αñûαÑçαñé αñöαñ░ αñªαÑïαñ¼αñ╛αñ░αñ╛ αñæαñ░αÑìαñíαñ░ αñòαÑç αñ╕αñ«αñ» αñ«αñ╛αñ¬ αññαÑüαñ░αñéαññ αñ¬αÑìαñ░αñ╛αñ¬αÑìαññ αñòαñ░αÑçαñéαÑñ",
++        te: "α░òα░╕α▒ìα░ƒα░«α░░α▒ì α░¬α▒ìα░░α▒èα░½α▒êα░▓α▒ìΓÇîα░▓α░ñα▒ï α░¿α▒çα░░α▒üα░ùα░╛ α░¼α░╛α░íα▒Ç α░òα▒èα░▓α░ñα░▓α░¿α▒ü (α░¢α░╛α░ñα▒Ç, α░¿α░íα▒üα░«α▒ü, α░¡α▒üα░£α░é, α░Üα▒çα░ñα▒üα░▓α▒ü α░«α▒èα░ªα░▓α▒êα░¿α░╡α░┐) α░íα░┐α░£α░┐α░ƒα░▓α▒ìΓÇîα░ùα░╛ α░░α░┐α░òα░╛α░░α▒ìα░íα▒ì α░Üα▒çα░»α░éα░íα░┐. α░╕α▒ìα░òα▒åα░Üα▒ìΓÇîα░▓α░¿α▒ü α░¡α░ªα▒ìα░░α░¬α░░α░Üα░éα░íα░┐, α░«α░│α▒ìα░▓α▒Ç α░åα░░α▒ìα░íα░░α▒ì α░Üα▒çα░╕α▒çα░ƒα░¬α▒ìα░¬α▒üα░íα▒ü α░òα▒èα░▓α░ñα░▓α░¿α▒ü α░╡α▒åα░éα░ƒα░¿α▒ç α░¬α▒èα░éα░ªα░éα░íα░┐."
++      },
++      actionText: {
++        en: "Try Live Measure Slider",
++        hi: "αñ▓αñ╛αñçαñ╡ αñ«αñ╛αñ¬ αñ╕αÑìαñ▓αñ╛αñçαñíαñ░ αñåαñ£αñ╝αñ«αñ╛αñÅαñé",
++        te: "α░▓α▒êα░╡α▒ì α░òα▒èα░▓α░ñ α░╕α▒ìα░▓α▒êα░íα░░α▒ì α░Üα▒éα░íα░éα░íα░┐"
++      }
++    },
++    {
++      id: 2,
++      title: t('feature2Title'),
++      desc: t('feature2Desc'),
++      icon: <FileText className="w-5 h-5" />,
++      color: "blue",
++      glowClass: "hover-glow-blue",
++      bgClass: "bg-blue-500/10 text-blue-400",
++      details: {
++        en: "A comprehensive booking register for shirts, suits, pants, blouses, and kurtas. Track booking dates, custom style instructions, delivery deadlines, and current stitching status in one simplified interface.",
++        hi: "αñ╢αñ░αÑìαñƒ, αñ╕αÑéαñƒ, αñ¬αÑêαñéαñƒ, αñ¼αÑìαñ▓αñ╛αñëαñ£ αñöαñ░ αñòαÑüαñ░αÑìαññαÑç αñòαÑç αñ▓αñ┐αñÅ αñÅαñò αñ╡αÑìαñ»αñ╛αñ¬αñò αñ¼αÑüαñòαñ┐αñéαñù αñ░αñ£αñ┐αñ╕αÑìαñƒαñ░αÑñ αñÅαñò αñ╕αñ░αñ▓ αñçαñéαñƒαñ░αñ½αñ╝αÑçαñ╕ αñ«αÑçαñé αñ¼αÑüαñòαñ┐αñéαñù αñòαÑÇ αññαñ╛αñ░αÑÇαñû, αñòαñ╕αÑìαñƒαñ« αñ╕αÑìαñƒαñ╛αñçαñ▓ αñ¿αñ┐αñ░αÑìαñªαÑçαñ╢, αñíαñ┐αñ▓αÑÇαñ╡αñ░αÑÇ αñ╕αñ«αñ» αñ╕αÑÇαñ«αñ╛ αñöαñ░ αñ╡αñ░αÑìαññαñ«αñ╛αñ¿ αñ╕αñ┐αñ▓αñ╛αñê αñ╕αÑìαñÑαñ┐αññαñ┐ αñòαÑï αñƒαÑìαñ░αÑêαñò αñòαñ░αÑçαñéαÑñ",
++        te: "α░╖α░░α▒ìα░ƒα▒üα░▓α▒ü, α░╕α▒éα░ƒα▒ìα░▓α▒ü, α░¬α▒ìα░»α░╛α░éα░ƒα▒ìα░▓α▒ü, α░¼α▒ìα░▓α▒îα░£α▒ìα░▓α▒ü α░«α░░α░┐α░»α▒ü α░òα▒üα░░α▒ìα░ñα░╛α░▓ α░òα▒ïα░╕α░é α░Æα░ò α░╕α░«α░ùα▒ìα░░ α░¼α▒üα░òα░┐α░éα░ùα▒ì α░░α░┐α░£α░┐α░╕α▒ìα░ƒα░░α▒ì. α░¼α▒üα░òα░┐α░éα░ùα▒ì α░ñα▒çα░ªα▒Çα░▓α▒ü, α░íα░┐α░£α▒êα░¿α▒ì α░╕α▒éα░Üα░¿α░▓α▒ü, α░íα▒åα░▓α░┐α░╡α░░α▒Ç α░ùα░íα▒üα░╡α▒ü α░«α░░α░┐α░»α▒ü α░¬α▒ìα░░α░╕α▒ìα░ñα▒üα░ñ α░òα▒üα░ƒα▒ìα░ƒα▒üα░¬α░¿α░┐ α░╕α▒ìα░Ñα░┐α░ñα░┐α░¿α░┐ α░╕α▒üα░▓α░¡α░éα░ùα░╛ α░ƒα▒ìα░░α░╛α░òα▒ì α░Üα▒çα░»α░éα░íα░┐."
++      },
++      actionText: {
++        en: "Open Digital Register",
++        hi: "αñíαñ┐αñ£αñ┐αñƒαñ▓ αñ░αñ£αñ┐αñ╕αÑìαñƒαñ░ αñûαÑïαñ▓αÑçαñé",
++        te: "α░íα░┐α░£α░┐α░ƒα░▓α▒ì α░░α░┐α░£α░┐α░╕α▒ìα░ƒα░░α▒ì α░ñα▒åα░░α░╡α░éα░íα░┐"
++      }
++    },
++    {
++      id: 3,
++      title: t('feature3Title'),
++      desc: t('feature3Desc'),
++      icon: <MessageSquare className="w-5 h-5" />,
++      color: "pink",
++      glowClass: "hover-glow-pink",
++      bgClass: "bg-pink-500/10 text-pink-400",
++      details: {
++        en: "Automated communication engine that generates daily morning tasks and sends prompt WhatsApp notifications to clients when their garments are ready for pickup, including detailed payment due status.",
++        hi: "αñ╕αÑìαñ╡αñÜαñ╛αñ▓αñ┐αññ αñ╕αñéαñÜαñ╛αñ░ αñ¬αÑìαñ░αñúαñ╛αñ▓αÑÇ αñ£αÑï αñªαÑêαñ¿αñ┐αñò αñ╕αÑüαñ¼αñ╣ αñòαÑç αñòαñ╛αñ« αñëαññαÑìαñ¬αñ¿αÑìαñ¿ αñòαñ░αññαÑÇ αñ╣αÑê αñöαñ░ αñòαñ¬αñíαñ╝αÑç αññαÑêαñ»αñ╛αñ░ αñ╣αÑïαñ¿αÑç αñ¬αñ░ αñùαÑìαñ░αñ╛αñ╣αñòαÑïαñé αñòαÑï αñ╡αÑìαñ╣αñ╛αñƒαÑìαñ╕αñÅαñ¬ αñ¿αÑïαñƒαñ┐αñ½αñ┐αñòαÑçαñ╢αñ¿ αñ¡αÑçαñ£αññαÑÇ αñ╣αÑê, αñ£αñ┐αñ╕αñ«αÑçαñé αñ▓αñéαñ¼αñ┐αññ αñ¡αÑüαñùαññαñ╛αñ¿ αñòαÑÇ αñ£αñ╛αñ¿αñòαñ╛αñ░αÑÇ αñ¡αÑÇ αñ╢αñ╛αñ«αñ┐αñ▓ αñ╣αÑïαññαÑÇ αñ╣αÑêαÑñ",
++        te: "α░òα░╕α▒ìα░ƒα░«α░░α▒ìα░▓ α░ªα▒üα░╕α▒ìα░ñα▒üα░▓α▒ü α░╕α░┐α░ªα▒ìα░ºα░éα░ùα░╛ α░ëα░¿α▒ìα░¿α░¬α▒ìα░¬α▒üα░íα▒ü α░╡α░╛α░ƒα▒ìα░╕α░╛α░¬α▒ì α░¿α▒ïα░ƒα░┐α░½α░┐α░òα▒çα░╖α░¿α▒ìΓÇîα░▓α░¿α▒ü α░¬α░éα░¬α▒ç α░åα░ƒα▒ïα░«α▒çα░ƒα░┐α░òα▒ì α░àα░▓α░░α▒ìα░ƒα▒ì α░╕α░┐α░╕α▒ìα░ƒα░«α▒ì. α░çα░éα░ªα▒üα░▓α▒ï α░¬α▒åα░éα░íα░┐α░éα░ùα▒ì α░¬α▒çα░«α▒åα░éα░ƒα▒ì α░╡α░┐α░╡α░░α░╛α░▓α▒ü α░òα▒éα░íα░╛ α░ëα░éα░ƒα░╛α░»α░┐."
++      },
++      actionText: {
++        en: "Trigger Test Alert",
++        hi: "αñ¬αñ░αÑÇαñòαÑìαñ╖αñú αñàαñ▓αñ░αÑìαñƒ αñ¡αÑçαñ£αÑçαñé",
++        te: "α░ƒα▒åα░╕α▒ìα░ƒα▒ì α░àα░▓α░░α▒ìα░ƒα▒ì α░¬α░éα░¬α░éα░íα░┐"
++      }
++    },
++    {
++      id: 4,
++      title: t('feature4Title'),
++      desc: t('feature4Desc'),
++      icon: <Smartphone className="w-5 h-5" />,
++      color: "emerald",
++      glowClass: "hover-glow-emerald",
++      bgClass: "bg-emerald-500/10 text-emerald-400",
++      details: {
++        en: "Self-serve mobile portal tailored for customers. Without downloading any app, clients login with their phone numbers to check real-time order status, balance payments due, and see saved measurement charts.",
++        hi: "αñùαÑìαñ░αñ╛αñ╣αñòαÑïαñé αñòαÑç αñ▓αñ┐αñÅ αñ╡αñ┐αñ╢αÑçαñ╖ αñ░αÑéαñ¬ αñ╕αÑç αñíαñ┐αñ£αñ╝αñ╛αñçαñ¿ αñòαñ┐αñ»αñ╛ αñùαñ»αñ╛ αñ╕αÑìαñ╡αñ»αñé-αñ╕αÑçαñ╡αñ╛ αñ«αÑïαñ¼αñ╛αñçαñ▓ αñ¬αÑïαñ░αÑìαñƒαñ▓αÑñ αñòαñ┐αñ╕αÑÇ αñÉαñ¬ αñòαÑï αñíαñ╛αñëαñ¿αñ▓αÑïαñí αñòαñ┐αñÅ αñ¼αñ┐αñ¿αñ╛, αñùαÑìαñ░αñ╛αñ╣αñò αñ░αÑÇαñ»αñ▓-αñƒαñ╛αñçαñ« αñæαñ░αÑìαñíαñ░ αñ╕αÑìαñÑαñ┐αññαñ┐, αñ╢αÑçαñ╖ αñ¡αÑüαñùαññαñ╛αñ¿ αñöαñ░ αñàαñ¬αñ¿αÑç αñ«αñ╛αñ¬αÑïαñé αñòαÑï αñªαÑçαñûαñ¿αÑç αñòαÑç αñ▓αñ┐αñÅ αñ½αÑïαñ¿ αñ¿αñéαñ¼αñ░ αñ╕αÑç αñ▓αÑëαñù αñçαñ¿ αñòαñ░ αñ╕αñòαññαÑç αñ╣αÑêαñéαÑñ",
++        te: "α░òα░╕α▒ìα░ƒα░«α░░α▒ìα░▓ α░òα▒ïα░╕α░é α░¬α▒ìα░░α░ñα▒ìα░»α▒çα░òα░éα░ùα░╛ α░░α▒éα░¬α▒èα░éα░ªα░┐α░éα░Üα░┐α░¿ α░«α▒èα░¼α▒êα░▓α▒ì α░¬α▒ïα░░α▒ìα░ƒα░▓α▒ì. α░»α░╛α░¬α▒ìΓÇî α░íα▒îα░¿α▒ìΓÇîα░▓α▒ïα░íα▒ì α░Üα▒çα░»α░òα▒üα░éα░íα░╛α░¿α▒ç, α░òα░╕α▒ìα░ƒα░«α░░α▒ìα░▓α▒ü α░ñα░« α░½α▒ïα░¿α▒ì α░¿α░éα░¼α░░α▒ìΓÇîα░ñα▒ï α░▓α░╛α░ùα░┐α░¿α▒ì α░àα░»α░┐ α░åα░░α▒ìα░íα░░α▒ìα░▓ α░╕α▒ìα░Ñα░┐α░ñα░┐α░¿α░┐, α░¼α▒ìα░»α░╛α░▓α▒åα░¿α▒ìα░╕α▒ì α░¬α▒çα░«α▒åα░éα░ƒα▒ìΓÇîα░¿α▒ü α░Üα▒åα░òα▒ì α░Üα▒çα░»α░╡α░Üα▒ìα░Üα▒ü."
++      },
++      actionText: {
++        en: "Launch Customer Demo",
++        hi: "αñùαÑìαñ░αñ╛αñ╣αñò αñíαÑçαñ«αÑï αñ╢αÑüαñ░αÑé αñòαñ░αÑçαñé",
++        te: "α░òα░╕α▒ìα░ƒα░«α░░α▒ì α░íα▒åα░«α▒ï α░Üα▒éα░íα░éα░íα░┐"
++      }
++    },
++    {
++      id: 5,
++      title: t('feature5Title'),
++      desc: t('feature5Desc'),
++      icon: <Calendar className="w-5 h-5" />,
++      color: "blue",
++      glowClass: "hover-glow-blue",
++      bgClass: "bg-blue-500/10 text-blue-400",
++      details: {
++        en: "Visualize delivery targets using daily, weekly, and monthly calendar heatmaps. Auto-prioritize overdue items, highlighting urgent bookings to ensure tailors meet customer commitments without delays.",
++        hi: "αñªαÑêαñ¿αñ┐αñò, αñ╕αñ╛αñ¬αÑìαññαñ╛αñ╣αñ┐αñò αñöαñ░ αñ«αñ╛αñ╕αñ┐αñò αñòαÑêαñ▓αÑçαñéαñíαñ░ αñ╣αÑÇαñƒαñ«αÑêαñ¬ αñòαñ╛ αñëαñ¬αñ»αÑïαñù αñòαñ░αñòαÑç αñíαñ┐αñ▓αÑÇαñ╡αñ░αÑÇ αñ▓αñòαÑìαñ╖αÑìαñ»αÑïαñé αñòαÑï αñªαÑçαñûαÑçαñéαÑñ αñàαññαñ┐αñªαÑçαñ» αñ╡αñ╕αÑìαññαÑüαñôαñé αñòαÑï αñ╕αÑìαñ╡αñÜαñ╛αñ▓αñ┐αññ αñ░αÑéαñ¬ αñ╕αÑç αñ¬αÑìαñ░αñ╛αñÑαñ«αñ┐αñòαññαñ╛ αñªαÑçαñé, αññαñ╛αñòαñ┐ αñªαñ░αÑìαñ£αÑÇ αñ¼αñ┐αñ¿αñ╛ αñòαñ┐αñ╕αÑÇ αñªαÑçαñ░αÑÇ αñòαÑç αñ╕αñ«αñ» αñ¬αñ░ αñòαñ¬αñíαñ╝αÑç αñªαÑç αñ╕αñòαÑçαñéαÑñ",
++        te: "α░░α▒ïα░£α▒üα░╡α░╛α░░α▒Ç, α░╡α░╛α░░α░¬α▒ü α░«α░░α░┐α░»α▒ü α░¿α▒åα░▓α░╡α░╛α░░α▒Ç α░òα▒ìα░»α░╛α░▓α▒åα░éα░íα░░α▒ìα░▓ α░ªα▒ìα░╡α░╛α░░α░╛ α░íα▒åα░▓α░┐α░╡α░░α▒Ç α░▓α░òα▒ìα░╖α▒ìα░»α░╛α░▓α░¿α▒ü α░╡α▒Çα░òα▒ìα░╖α░┐α░éα░Üα░éα░íα░┐. α░ùα░íα▒üα░╡α▒ü α░«α▒üα░ùα░┐α░╕α░┐α░¿ α░╡α░╛α░ƒα░┐α░¿α░┐ α░¬α▒ìα░░α░╛α░ºα░╛α░¿α▒ìα░»α░ñ α░¬α▒ìα░░α░òα░╛α░░α░é α░¬α▒éα░░α▒ìα░ñα░┐ α░Üα▒çα░»α░íα░╛α░¿α░┐α░òα░┐ α░╕α░╣α░╛α░»α░¬α░íα▒üα░ñα▒üα░éα░ªα░┐."
++      },
++      actionText: {
++        en: "View Calendar",
++        hi: "αñòαÑêαñ▓αÑçαñéαñíαñ░ αñªαÑçαñûαÑçαñé",
++        te: "α░òα▒ìα░»α░╛α░▓α▒åα░éα░íα░░α▒ì α░╡α▒Çα░òα▒ìα░╖α░┐α░éα░Üα░éα░íα░┐"
++      }
++    },
++    {
++      id: 6,
++      title: t('feature6Title'),
++      desc: t('feature6Desc'),
++      icon: <IndianRupee className="w-5 h-5" />,
++      color: "amber",
++      glowClass: "hover-glow-amber",
++      bgClass: "bg-amber-500/10 text-amber-400",
++      details: {
++        en: "Keep track of payments including initial deposits, advance installments, cash payments, and digital UPI transfers. Generates automated receipts and tracks outstanding payments per customer.",
++        hi: "αñ¬αÑìαñ░αñ╛αñ░αñéαñ¡αñ┐αñò αñ£αñ«αñ╛, αñàαñùαÑìαñ░αñ┐αñ« αñòαñ┐αñ╕αÑìαññαÑïαñé, αñ¿αñòαñª αñ¡αÑüαñùαññαñ╛αñ¿ αñöαñ░ αñíαñ┐αñ£αñ┐αñƒαñ▓ UPI αñ╣αñ╕αÑìαññαñ╛αñéαññαñ░αñú αñ╕αñ╣αñ┐αññ αñ¡αÑüαñùαññαñ╛αñ¿αÑïαñé αñ¬αñ░ αñ¿αñ£αñ╝αñ░ αñ░αñûαÑçαñéαÑñ αñ╕αÑìαñ╡αñÜαñ╛αñ▓αñ┐αññ αñ░αñ╕αÑÇαñªαÑçαñé αñëαññαÑìαñ¬αñ¿αÑìαñ¿ αñòαñ░αññαñ╛ αñ╣αÑê αñöαñ░ αñ¬αÑìαñ░αññαÑìαñ»αÑçαñò αñùαÑìαñ░αñ╛αñ╣αñò αñòαÑç αñ¼αñòαñ╛αñ»αñ╛ αñ¡αÑüαñùαññαñ╛αñ¿ αñòαÑï αñƒαÑìαñ░αÑêαñò αñòαñ░αññαñ╛ αñ╣αÑêαÑñ",
++        te: "α░íα░┐α░¬α░╛α░£α░┐α░ƒα▒ìα░▓α▒ü, α░àα░íα▒ìα░╡α░╛α░¿α▒ìα░╕α▒ì α░¬α▒çα░«α▒åα░éα░ƒα▒ìα░▓α▒ü, α░¿α░ùα░ªα▒ü α░«α░░α░┐α░»α▒ü α░íα░┐α░£α░┐α░ƒα░▓α▒ì UPI α░▓α░╛α░╡α░╛α░ªα▒çα░╡α▒Çα░▓α░¿α▒ü α░ƒα▒ìα░░α░╛α░òα▒ì α░Üα▒çα░»α░éα░íα░┐. α░åα░ƒα▒ïα░«α▒çα░ƒα░┐α░òα▒ì α░░α░╕α▒Çα░ªα▒üα░▓α░¿α▒ü α░╕α▒âα░╖α▒ìα░ƒα░┐α░éα░Üα░┐ α░¼α▒ìα░»α░╛α░▓α▒åα░¿α▒ìα░╕α▒ì α░¼α░òα░╛α░»α░┐α░▓α░¿α▒ü α░▓α▒åα░òα▒ìα░òα░┐α░╕α▒ìα░ñα▒üα░éα░ªα░┐."
++      },
++      actionText: {
++        en: "Record Installment",
++        hi: "αñòαñ┐αñ╕αÑìαññ αñªαñ░αÑìαñ£ αñòαñ░αÑçαñé",
++        te: "α░òα▒èα░ñα▒ìα░ñ α░¬α▒çα░«α▒åα░éα░ƒα▒ì α░░α░╛α░»α░éα░íα░┐"
++      }
++    },
++    {
++      id: 7,
++      title: t('feature7Title'),
++      desc: t('feature7Desc'),
++      icon: <BarChart3 className="w-5 h-5" />,
++      color: "purple",
++      glowClass: "hover-glow-purple",
++      bgClass: "bg-purple-500/10 text-purple-400",
++      details: {
++        en: "Unlock complete insight into shop performance with analytics showing monthly collections, pending collection pipelines, fabric popularity, and detailed daily earnings charts.",
++        hi: "αñ«αñ╛αñ╕αñ┐αñò αñ╕αñéαñùαÑìαñ░αñ╣, αñ▓αñéαñ¼αñ┐αññ αñ¡αÑüαñùαññαñ╛αñ¿ αñ¬αñ╛αñçαñ¬αñ▓αñ╛αñçαñ¿, αñòαñ¬αñíαñ╝αÑïαñé αñòαÑÇ αñ▓αÑïαñòαñ¬αÑìαñ░αñ┐αñ»αññαñ╛ αñöαñ░ αñ╡αñ┐αñ╕αÑìαññαÑâαññ αñªαÑêαñ¿αñ┐αñò αñåαñ» αñÜαñ╛αñ░αÑìαñƒ αñªαñ┐αñûαñ╛αñ¿αÑç αñ╡αñ╛αñ▓αÑç αñ╡αñ┐αñ╢αÑìαñ▓αÑçαñ╖αñúαÑïαñé αñòαÑç αñ╕αñ╛αñÑ αñªαÑüαñòαñ╛αñ¿ αñòαÑç αñ¬αÑìαñ░αñªαñ░αÑìαñ╢αñ¿ αñòαÑÇ αñ¬αÑéαñ░αÑÇ αñ£αñ╛αñ¿αñòαñ╛αñ░αÑÇ αñ¬αÑìαñ░αñ╛αñ¬αÑìαññ αñòαñ░αÑçαñéαÑñ",
++        te: "α░¿α▒åα░▓α░╡α░╛α░░α▒Ç α░╡α░╕α▒éα░│α▒ìα░▓α▒ü, α░¬α▒åα░éα░íα░┐α░éα░ùα▒ì α░¼α░òα░╛α░»α░┐α░▓α▒ü, α░¼α░ƒα▒ìα░ƒα░▓ α░░α░òα░╛α░▓ α░íα░┐α░«α░╛α░éα░íα▒ì α░«α░░α░┐α░»α▒ü α░░α▒ïα░£α▒üα░╡α░╛α░░α▒Ç α░╕α░éα░¬α░╛α░ªα░¿ α░Üα░╛α░░α▒ìα░ƒα▒ìΓÇîα░▓α░ñα▒ï α░ªα▒üα░òα░╛α░ú α░¬α░¿α░┐α░ñα▒Çα░░α▒üα░¿α▒ü α░¬α▒éα░░α▒ìα░ñα░┐α░ùα░╛ α░╡α░┐α░╢α▒ìα░▓α▒çα░╖α░┐α░éα░Üα░éα░íα░┐."
++      },
++      actionText: {
++        en: "Open Analytics",
++        hi: "αñ╡αñ┐αñ╢αÑìαñ▓αÑçαñ╖αñú αñûαÑïαñ▓αÑçαñé",
++        te: "α░àα░¿α░▓α░┐α░ƒα░┐α░òα▒ìα░╕α▒ì α░ñα▒åα░░α░╡α░éα░íα░┐"
++      }
++    },
++    {
++      id: 8,
++      title: t('feature8Title'),
++      desc: t('feature8Desc'),
++      icon: <Lock className="w-5 h-5" />,
++      color: "pink",
++      glowClass: "hover-glow-pink",
++      bgClass: "bg-pink-500/10 text-pink-400",
++      details: {
++        en: "Secure cloud access protects sensitive customer and financial records. Fully localized in English, Hindi, and Telugu, enabling local shop assistants to work comfortably in their local language.",
++        hi: "αñ╕αÑüαñ░αñòαÑìαñ╖αñ┐αññ αñòαÑìαñ▓αñ╛αñëαñí αñÅαñòαÑìαñ╕αÑçαñ╕ αñ╕αñéαñ╡αÑçαñªαñ¿αñ╢αÑÇαñ▓ αñùαÑìαñ░αñ╛αñ╣αñò αñöαñ░ αñ╡αñ┐αññαÑìαññαÑÇαñ» αñ░αñ┐αñòαÑëαñ░αÑìαñí αñòαÑÇ αñ╕αÑüαñ░αñòαÑìαñ╖αñ╛ αñòαñ░αññαñ╛ αñ╣αÑêαÑñ αñàαñéαñùαÑìαñ░αÑçαñ£αÑÇ, αñ╣αñ┐αñéαñªαÑÇ αñöαñ░ αññαÑçαñ▓αÑüαñùαÑü αñ«αÑçαñé αñ¬αÑéαñ░αÑÇ αññαñ░αñ╣ αñ╕αÑç αñ╕αÑìαñÑαñ╛αñ¿αÑÇαñ»αñòαÑâαññ, αñ£αñ┐αñ╕αñ╕αÑç αñ╕αÑìαñÑαñ╛αñ¿αÑÇαñ» αñªαÑüαñòαñ╛αñ¿ αñ╕αñ╣αñ╛αñ»αñò αñàαñ¬αñ¿αÑÇ αñ¡αñ╛αñ╖αñ╛ αñ«αÑçαñé αñåαñ╕αñ╛αñ¿αÑÇ αñ╕αÑç αñòαñ╛αñ« αñòαñ░ αñ╕αñòαÑçαñéαÑñ",
++        te: "α░òα░╕α▒ìα░ƒα░«α░░α▒ì α░«α░░α░┐α░»α▒ü α░½α▒êα░¿α░╛α░¿α▒ìα░╖α░┐α░»α░▓α▒ì α░░α░┐α░òα░╛α░░α▒ìα░íα▒üα░▓α░òα▒ü α░¬α▒éα░░α▒ìα░ñα░┐ α░¡α░ªα▒ìα░░α░ñ. α░çα░éα░ùα▒ìα░▓α▒Çα░╖α▒ì, α░╣α░┐α░éα░ªα▒Ç α░«α░░α░┐α░»α▒ü α░ñα▒åα░▓α▒üα░ùα▒ü α░¡α░╛α░╖α░▓α░▓α▒ï α░▓α░¡α░┐α░éα░Üα░íα░é α░ªα▒ìα░╡α░╛α░░α░╛ α░╕α░┐α░¼α▒ìα░¼α░éα░ªα░┐ α░╕α▒üα░▓α░¡α░éα░ùα░╛ α░¬α░¿α░┐ α░Üα▒çα░╕α▒üα░òα▒ïα░╡α░Üα▒ìα░Üα▒ü."
++      },
++      actionText: {
++        en: "System Health Info",
++        hi: "αñ╕αñ┐αñ╕αÑìαñƒαñ« αñ╕αÑìαñ╡αñ╛αñ╕αÑìαñÑαÑìαñ» αñ£αñ╛αñ¿αñòαñ╛αñ░αÑÇ",
++        te: "αñ╕αñ┐α░╕α▒ìα░ƒα░«α▒ì α░╣α▒åα░▓α▒ìα░ñα▒ì α░╕α░«α░╛α░Üα░╛α░░α░é"
++      }
++    }
++  ];
+ 
+   return (
+-    <div className="min-height-screen flex flex-col font-sans animate-fade-in">
++    <div className="min-h-screen flex flex-col font-sans animate-fade-in bg-gray-950 text-gray-200 relative">
+       {/* Header */}
+       <header className="glass-panel sticky top-0 z-50 border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center">
+-        <div className="flex items-center space-x-3 cursor-pointer" onClick={() => onNavigate('home')}>
+-          <div className="p-2 bg-purple-600/20 border border-purple-500/30 rounded-xl text-purple-400">
+-            <Scissors className="w-6 h-6 animate-pulse" />
++        <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => onNavigate('home')}>
++          <div className="p-2.5 bg-gradient-to-tr from-purple-600/20 to-pink-500/20 border border-purple-500/40 rounded-xl text-purple-400 group-hover:border-pink-400/50 group-hover:shadow-lg group-hover:shadow-pink-500/10 transition-all duration-300">
++            <Scissors className="w-5 h-5 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300" />
+           </div>
+-          <span className="font-heading text-xl font-bold tracking-tight text-white">
+-            {t('appName')}
++          <span className="font-heading text-xl font-extrabold tracking-tight text-white transition-all duration-300">
++            {language === 'hi' ? (
++              <>αñ╡αñ╕αÑìαññαÑìαñ░<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 font-black">αñ╕αñ┐αñ▓αñ╛αñê</span></>
++            ) : language === 'te' ? (
++              <>α░╡α░╕α▒ìα░ñα▒ìα░░<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 font-black">α░╕α░┐α░▓α▒ê</span></>
++            ) : (
++              <>Vastra<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 font-black">Silai</span></>
++            )}
+           </span>
+         </div>
+ 
+         <div className="flex items-center space-x-4">
+-          {/* Language Selection */}
+-          <div className="flex items-center space-x-1 bg-white/5 border border-white/10 rounded-xl px-2 py-1.5">
+-            <Languages className="w-4 h-4 text-purple-400" />
+-            <select
+-              value={language}
+-              onChange={(e) => changeLanguage(e.target.value)}
+-              className="bg-transparent text-sm text-gray-300 border-none focus:outline-none cursor-pointer pr-1"
++          {/* Custom Styled Language Selector Dropdown */}
++          <div className="relative">
++            <button
++              onClick={() => setIsLangOpen(!isLangOpen)}
++              className="flex items-center space-x-2 bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-gray-300 transition cursor-pointer select-none"
+             >
+-              <option value="en" className="bg-gray-950 text-white">{t('english')}</option>
+-              <option value="hi" className="bg-gray-950 text-white">{t('hindi')}</option>
+-              <option value="te" className="bg-gray-950 text-white">{t('telugu')}</option>
+-            </select>
++              <Globe className="w-4 h-4 text-purple-400" />
++              <span>
++                {language === 'en' ? 'EN' : language === 'hi' ? 'αñ╣αñ┐αñ¿αÑìαñªαÑÇ' : 'α░ñα▒åα░▓α▒üα░ùα▒ü'}
++              </span>
++              <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
++            </button>
++            
++            {isLangOpen && (
++              <>
++                {/* Click catcher background to close dropdown */}
++                <div className="fixed inset-0 z-40" onClick={() => setIsLangOpen(false)}></div>
++                
++                {/* Dropdown Options */}
++                <div className="absolute right-0 mt-2 w-44 rounded-2xl lang-dropdown-menu p-1 z-50 overflow-hidden">
++                  {langOptions.map((opt) => (
++                    <button
++                      key={opt.code}
++                      onClick={() => {
++                        changeLanguage(opt.code);
++                        setIsLangOpen(false);
++                      }}
++                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer flex justify-between items-center ${
++                        language === opt.code 
++                          ? 'bg-purple-500/25 text-purple-300 font-bold border border-purple-500/20' 
++                          : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
++                      }`}
++                    >
++                      <span>{opt.label}</span>
++                      {language === opt.code && <Check className="w-3.5 h-3.5 text-purple-400" />}
++                    </button>
++                  ))}
++                </div>
++              </>
++            )}
+           </div>
+ 
+           <button
+-            onClick={() => onNavigate('login')}
+-            className="text-sm font-medium text-white/80 hover:text-white px-4 py-2 rounded-xl transition cursor-pointer"
++            onClick={() => onNavigate('customer_login')}
++            className="flex items-center text-xs font-bold text-purple-300 hover:text-white px-4 py-2.5 rounded-xl transition cursor-pointer border border-purple-500/20 hover:border-purple-400/50 bg-purple-500/10 hover:bg-purple-500/20 shadow-lg shadow-purple-950/20 group"
+           >
+-            {t('loginBtn')}
++            <Smartphone className="w-5 h-5 mr-1.5 text-purple-400 group-hover:scale-115 transition-transform duration-300" />
++            <span>{t('customerPortal')}</span>
+           </button>
++          
+           <button
+-            onClick={() => onNavigate('register')}
+-            className="neon-btn px-5 py-2 rounded-xl text-sm font-medium text-white cursor-pointer"
++            onClick={() => onNavigate('login')}
++            className="flex items-center neon-btn px-5 py-2.5 rounded-xl text-xs font-extrabold text-white cursor-pointer group"
+           >
+-            {t('registerBtn')}
++            <Scissors className="w-5 h-5 mr-1.5 text-white group-hover:rotate-12 transition-transform duration-300" />
++            <span>{t('tailorPortal')}</span>
+           </button>
+         </div>
+       </header>
+ 
+-      {/* Hero Section */}
+-      <main className="flex-grow flex flex-col items-center justify-center text-center px-6 py-20 relative">
+-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl -z-10"></div>
+-        <div className="absolute bottom-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl -z-10"></div>
++      {/* Main hero section */}
++      <main className="flex-grow flex flex-col items-center px-6 py-16 relative bg-stitch-grid overflow-hidden">
++        
++        {/* Glow Spheres with custom floats */}
++        <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full glow-spot-purple -z-10 animate-blob-1 pointer-events-none"></div>
++        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full glow-spot-blue -z-10 animate-blob-2 pointer-events-none"></div>
++        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full glow-spot-pink -z-10 animate-blob-3 pointer-events-none"></div>
+ 
+-        <div className="max-w-4xl mx-auto space-y-6">
+-          <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider rounded-full">
+-            {t('tagline')}
+-          </span>
+-          <h1 className="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-none">
+-            Modernize Your Tailoring Shop <br />
+-            With <span className="gradient-text font-black">{t('appName')}</span>
+-          </h1>
+-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+-            Ditch the old notebooks! Manage customer measurements, payment status, and order schedules online. Automatically notify customers via WhatsApp reminders.
+-          </p>
+-
+-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
+-            <button
+-              onClick={() => onNavigate('register')}
+-              className="w-full sm:w-auto neon-btn text-white px-8 py-3.5 rounded-xl font-medium flex items-center justify-center space-x-2 text-base group cursor-pointer"
+-            >
+-              <span>{t('registerBtn')}</span>
+-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
+-            </button>
+-            <button
+-              onClick={() => onNavigate('login')}
+-              className="w-full sm:w-auto bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-3.5 rounded-xl font-medium transition text-base cursor-pointer"
+-            >
+-              <span>{t('loginBtn')}</span>
+-            </button>
+-          </div>
+-        </div>
++        {/* Sewing Line SVG Path */}
++        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 hidden lg:block" xmlns="http://www.w3.org/2000/svg">
++          <path 
++            d="M 150,220 Q 450,80 500,420 T 950,260" 
++            fill="none" 
++            stroke="rgba(168, 85, 247, 0.12)" 
++            strokeWidth="2.5" 
++            strokeDasharray="6,6" 
++            className="animate-stitch-flow" 
++          />
++        </svg>
+ 
+-        {/* Features list */}
+-        <section className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto mt-24">
+-          <div className="glass-card p-6 text-left rounded-2xl border border-white/5 space-y-3">
+-            <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400">
+-              <Users className="w-5 h-5" />
++        {/* Hero columns */}
++        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-left py-10 relative z-10">
++          
++          {/* Left Column: Copywriting */}
++          <div className="lg:col-span-5 space-y-8 flex flex-col items-start">
++            <span className="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-wider rounded-full">
++              <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '4s' }} />
++              <span>{t('tagline')}</span>
++            </span>
++            
++            <h1 className="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-none">
++              {t('heroTitle')} <br />
++              {t('withText')} <span className="gradient-text font-black">{t('appName')}</span>
++            </h1>
++            
++            <p className="text-gray-400 text-lg leading-relaxed max-w-lg">
++              {t('heroSubtitle')}
++            </p>
++
++            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto pt-2">
++              <button
++                onClick={() => onNavigate('login')}
++                className="w-full sm:w-auto neon-btn text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center space-x-2 text-base group cursor-pointer"
++              >
++                <span>{t('tailorPortal')}</span>
++                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
++              </button>
++            </div>
++            
++            <div className="pt-2 flex items-center space-x-2 group">
++              <button
++                onClick={() => onNavigate('customer_login')}
++                className="text-sm font-semibold text-purple-400/80 hover:text-purple-300 transition cursor-pointer flex items-center space-x-1.5"
++              >
++                <span>{t('customerPortalPrompt')}</span>
++              </button>
+             </div>
+-            <h3 className="text-white font-semibold text-lg">Digital Measurements</h3>
+-            <p className="text-sm text-gray-400">Store Chest, Waist, Shoulder lengths digitally. Access measurement histories instantly.</p>
+           </div>
+ 
+-          <div className="glass-card p-6 text-left rounded-2xl border border-white/5 space-y-3">
+-            <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400">
+-              <Calendar className="w-5 h-5" />
++          {/* Right Column: Live Interactive Sandbox Widget */}
++          <div id="demo-widget" className="lg:col-span-7 flex flex-col sm:flex-row gap-6 items-stretch w-full">
++            
++            {/* Sub-Widget 1: Tailor's Order Workspace Profile */}
++            <div className={`flex-grow flex flex-col justify-between glass-card p-6 rounded-3xl border border-white/5 relative overflow-hidden transition-all duration-500 ${
++              orderStatus === 0 ? 'active-card-booked' :
++              orderStatus === 1 ? 'active-card-stitching' :
++              'active-card-ready'
++            }`}>
++              
++              {/* Stitch design line running in background */}
++              <div className="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none">
++                <svg viewBox="0 0 100 100" className="w-full h-full text-purple-500">
++                  <path d="M10,10 C40,40 20,70 90,90" fill="none" stroke="currentColor" strokeWidth="2" className="animate-stitch-flow" />
++                </svg>
++              </div>
++
++              <div className="space-y-4">
++                <div className="flex justify-between items-start">
++                  <div className="space-y-1">
++                    <span className="text-[10px] bg-purple-500/10 text-purple-400 font-bold px-2 py-0.5 rounded border border-purple-500/20 uppercase tracking-widest">Order #2085</span>
++                    <h4 className="text-white font-extrabold text-lg mt-1">{t('stichesSaved').includes('αñæαñ░αÑìαñíαñ░') ? 'αñåαñ░αñ╡ αñ╢αñ░αÑìαñ«αñ╛' : 'Aarav Sharma'}</h4>
++                  </div>
++                  <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider transition-all duration-300 flex items-center space-x-1.5 ${
++                    orderStatus === 0 ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
++                    orderStatus === 1 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
++                    'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
++                  }`}>
++                    <span className={`w-1.5 h-1.5 rounded-full ${
++                      orderStatus === 0 ? 'bg-blue-400' : orderStatus === 1 ? 'bg-amber-400' : 'bg-emerald-400'
++                    } animate-ping`}></span>
++                    <span>{orderStatus === 0 ? t('booked') : orderStatus === 1 ? t('statusPending') : t('statusCompleted')}</span>
++                  </span>
++                </div>
++
++                {/* Measurements with Custom Sliders */}
++                <div className="space-y-4 pt-2">
++                  <p className="text-[10px] text-purple-400 uppercase font-bold tracking-widest flex items-center space-x-1.5 border-b border-white/5 pb-1.5">
++                    <Sliders className="w-3.5 h-3.5" />
++                    <span>{t('previewDashboard')}</span>
++                  </p>
++                  
++                  {/* Chest Slider */}
++                  <div className="space-y-1">
++                    <div className="flex justify-between text-[11px]">
++                      <span className="text-gray-400 font-medium">{t('chest').split(' ')[0]}</span>
++                      <span className="text-white font-bold">{chest}"</span>
++                    </div>
++                    <input 
++                      type="range" 
++                      min="30" 
++                      max="50" 
++                      value={chest} 
++                      onChange={(e) => setChest(parseInt(e.target.value))}
++                      className="custom-slider"
++                    />
++                  </div>
++
++                  {/* Waist Slider */}
++                  <div className="space-y-1">
++                    <div className="flex justify-between text-[11px]">
++                      <span className="text-gray-400 font-medium">{t('waist').split(' ')[0]}</span>
++                      <span className="text-white font-bold">{waist}"</span>
++                    </div>
++                    <input 
++                      type="range" 
++                      min="28" 
++                      max="48" 
++                      value={waist} 
++                      onChange={(e) => setWaist(parseInt(e.target.value))}
++                      className="custom-slider"
++                    />
++                  </div>
++                </div>
++              </div>
++
++              {/* Progress Bar steps */}
++              <div className="space-y-2 pt-6">
++                <div className="flex justify-between text-[9px] text-gray-500 uppercase font-bold tracking-wider px-1">
++                  <span>{t('booked')}</span>
++                  <span>{t('statusPending')}</span>
++                  <span>{t('statusCompleted')}</span>
++                </div>
++                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
++                  <div className={`h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500 ${
++                    orderStatus === 0 ? 'w-[15%]' : orderStatus === 1 ? 'w-[55%]' : 'w-full'
++                  }`}></div>
++                </div>
++              </div>
++
++              {/* Status control */}
++              <div className="pt-5 flex flex-col gap-2 relative z-10">
++                <button 
++                  onClick={() => setOrderStatus((prev) => (prev + 1) % 3)}
++                  className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white py-2.5 rounded-xl text-xs font-bold transition cursor-pointer"
++                >
++                  Step Order Status
++                </button>
++                <button 
++                  onClick={triggerWhatsappSimulation}
++                  className="w-full bg-purple-600 hover:bg-purple-500 text-white py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center space-x-1.5 shadow-lg shadow-purple-600/20 hover:shadow-purple-600/35 cursor-pointer"
++                >
++                  <Bell className="w-3.5 h-3.5" />
++                  <span>{t('simulateWhatsApp')}</span>
++                </button>
++              </div>
++            </div>
++
++            {/* Sub-Widget 2: Customer Mobile Alert Mockup */}
++            <div className="w-full sm:w-64 bg-gray-900 border-[7px] border-gray-800 rounded-[36px] shadow-2xl overflow-hidden flex flex-col items-stretch shrink-0 relative border-t-[8px]">
++              
++              {/* Dynamic Island Camera Notch */}
++              <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-4 bg-gray-950 rounded-full z-40 flex justify-center items-center">
++                <div className="w-2.5 h-2.5 bg-gray-900 rounded-full border border-gray-950"></div>
++              </div>
++
++              {/* Side buttons */}
++              <div className="absolute left-[-9px] top-16 w-[2px] h-10 bg-gray-700 rounded-r z-10"></div>
++              <div className="absolute left-[-9px] top-28 w-[2px] h-10 bg-gray-700 rounded-r z-10"></div>
++              <div className="absolute right-[-9px] top-20 w-[2px] h-12 bg-gray-700 rounded-l z-10"></div>
++
++              {/* Simulated push notification overlay banner */}
++              {showPushBanner && (
++                <div className="absolute top-7 inset-x-2 bg-gray-950/95 backdrop-blur border border-white/10 rounded-2xl p-2.5 flex items-center space-x-3 z-50 shadow-2xl animate-push-banner">
++                  <div className="p-1.5 bg-purple-600/20 border border-purple-500/30 rounded-lg text-purple-400">
++                    <Scissors className="w-3.5 h-3.5" />
++                  </div>
++                  <div className="flex-grow text-left">
++                    <div className="flex justify-between items-center">
++                      <span className="text-[9px] font-bold text-white">{t('appName')}</span>
++                      <span className="text-[7px] text-gray-500">now</span>
++                    </div>
++                    <p className="text-[8px] text-gray-300 font-medium leading-tight mt-0.5">
++                      Order #2085 is {orderStatus === 0 ? 'Booked' : orderStatus === 1 ? 'Stitched' : 'Ready! Remaining Balance: Γé╣450.'}
++                    </p>
++                  </div>
++                </div>
++              )}
++
++              {/* Screen Content */}
++              <div className="flex-grow whatsapp-wallpaper pt-6 p-3 flex flex-col justify-between min-h-[340px] relative">
++                
++                {/* Chat Header */}
++                <div className="flex items-center space-x-2 bg-[#1f2c34]/90 backdrop-blur-md rounded-2xl p-2.5 border border-white/5 shadow-md mb-3">
++                  <div className="w-7 h-7 rounded-full bg-purple-600/25 border border-purple-500/35 flex items-center justify-center text-purple-400 font-bold text-[10px]">
++                    <Scissors className="w-3.5 h-3.5" />
++                  </div>
++                  <div className="text-left flex-grow">
++                    <p className="text-white text-[10px] font-bold leading-tight">{t('appName')}</p>
++                    <p className="text-emerald-400 text-[8px] leading-none mt-0.5">online</p>
++                  </div>
++                </div>
++
++                {/* Message Log */}
++                <div className="flex-grow space-y-2.5 overflow-y-auto text-[9px] leading-relaxed flex flex-col justify-end">
++                  
++                  {/* Digital Profile Welcome Bubble */}
++                  <div className="bg-[#1f2c34] text-gray-300 p-2.5 rounded-2xl rounded-tl-none max-w-[85%] self-start border border-white/5 shadow relative">
++                    Welcome to <span className="text-purple-400 font-semibold">{t('appName')}</span>! Your measurement profile has been digitized.
++                  </div>
++
++                  {/* Simulated WhatsApp Notification Bubble */}
++                  {whatsappSent && !notificationDismissed && (
++                    <div className="bg-[#005c4b] text-white p-2.5 rounded-2xl rounded-tr-none max-w-[90%] self-end shadow-lg border border-white/5 animate-notification relative">
++                      <p className="font-bold text-[8px] text-emerald-300 tracking-wider uppercase">WhatsApp Alert</p>
++                      <p className="mt-1 text-white font-medium text-[9px]">
++                        {language === 'en' ? `Hi Aarav, your order status is: ${orderStatus === 0 ? 'Order Created' : orderStatus === 1 ? 'Stitching Started' : 'Ready for collection! Please pay remaining balance.'}` :
++                         language === 'hi' ? `αñ¿αñ«αñ╕αÑìαññαÑç αñåαñ░αñ╡, αñåαñ¬αñòαñ╛ αñåαñ░αÑìαñíαñ░ αñ╕αÑìαñƒαÑçαñƒαñ╕ αñ╣αÑê: ${orderStatus === 0 ? 'αñæαñ░αÑìαñíαñ░ αñ¼αñ¿αñ╛αñ»αñ╛ αñùαñ»αñ╛' : orderStatus === 1 ? 'αñ╕αñ┐αñ▓αñ╛αñê αñ╢αÑüαñ░αÑé' : 'αññαÑêαñ»αñ╛αñ░ αñ╣αÑê! αñòαÑâαñ¬αñ»αñ╛ αñ╢αÑçαñ╖ αñ░αñ╛αñ╢αñ┐ αñòαñ╛ αñ¡αÑüαñùαññαñ╛αñ¿ αñòαñ░αÑçαñéαÑñ'}` :
++                         `α░¿α░«α░╕α▒ìα░ñα▒ç α░åα░░α░╡α▒ì, α░«α▒Ç α░åα░░α▒ìα░íα░░α▒ì α░╕α▒ìα░Ñα░┐α░ñα░┐: ${orderStatus === 0 ? 'α░åα░░α▒ìα░íα░░α▒ì α░¼α▒üα░òα▒ì α░Üα▒çα░»α░¼α░íα░┐α░éα░ªα░┐' : orderStatus === 1 ? 'α░òα▒üα░ƒα▒ìα░ƒα▒üα░¬α░¿α░┐ α░«α▒èα░ªα░▓α▒êα░éα░ªα░┐' : 'α░ñα▒Çα░╕α▒üα░òα▒ïα░╡α░íα░╛α░¿α░┐α░òα░┐ α░╕α░┐α░ªα▒ìα░ºα░éα░ùα░╛ α░ëα░éα░ªα░┐! α░¼α▒ìα░»α░╛α░▓α▒åα░¿α▒ìα░╕α▒ì α░¬α▒çα░«α▒åα░éα░ƒα▒ì α░Üα▒çα░»α░éα░íα░┐.'}`}
++                      </p>
++                      <div className="flex justify-between items-center mt-1 pt-1 border-t border-white/5 text-[7px] text-white/50">
++                        <span>Chest: {chest}" | Waist: {waist}"</span>
++                        <span className="flex items-center space-x-0.5">
++                          <span>Just now</span>
++                          <Check className="w-2.5 h-2.5 text-emerald-400" />
++                        </span>
++                      </div>
++                    </div>
++                  )}
++                </div>
++
++                {/* Simulated Input */}
++                <div className="bg-[#1f2c34] text-gray-500 rounded-full px-3 py-1.5 mt-3 text-[9px] flex justify-between items-center border border-white/5">
++                  <span>Type message...</span>
++                  <div className="w-4 h-4 bg-emerald-600 rounded-full flex items-center justify-center text-white text-[8px] cursor-pointer hover:bg-emerald-500">Γ£ô</div>
++                </div>
++
++                {/* Home Indicator bar */}
++                <div className="w-16 h-1 bg-white/20 rounded-full mx-auto mt-2"></div>
++
++              </div>
+             </div>
+-            <h3 className="text-white font-semibold text-lg">Delivery Scheduling</h3>
+-            <p className="text-sm text-gray-400">Organize orders into Today's, Overdue, and Upcoming lists. Stay ahead of deadlines.</p>
++
+           </div>
++        </div>
+ 
+-          <div className="glass-card p-6 text-left rounded-2xl border border-white/5 space-y-3">
+-            <div className="w-10 h-10 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-400">
+-              <MessageSquare className="w-5 h-5" />
++        {/* Upgraded Metric Stats section */}
++        <section className="w-full max-w-4xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
++          <div className="stats-card p-6 rounded-2xl flex flex-col items-center text-center space-y-3">
++            <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-xl">
++              <Award className="w-6 h-6" />
++            </div>
++            <div className="space-y-1">
++              <h4 className="text-3xl font-black text-white leading-none tracking-tight">
++                {stichesSavedNum}
++              </h4>
++              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mt-1">{stichesSavedText}</p>
++            </div>
++          </div>
++          
++          <div className="stats-card p-6 rounded-2xl flex flex-col items-center text-center space-y-3 border-t sm:border-t-0">
++            <div className="p-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl">
++              <Users className="w-6 h-6" />
++            </div>
++            <div className="space-y-1">
++              <h4 className="text-3xl font-black text-white leading-none tracking-tight">
++                {activeShopsNum}
++              </h4>
++              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mt-1">{activeShopsText}</p>
+             </div>
+-            <h3 className="text-white font-semibold text-lg">WhatsApp Alerts</h3>
+-            <p className="text-sm text-gray-400">Automate daily morning collections summary and send customized payment reminders.</p>
+           </div>
++          
++          <div className="stats-card p-6 rounded-2xl flex flex-col items-center text-center space-y-3">
++            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl">
++              <MessageSquare className="w-6 h-6" />
++            </div>
++            <div className="space-y-1">
++              <h4 className="text-3xl font-black text-white leading-none tracking-tight">
++                {deliveryRateNum}
++              </h4>
++              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mt-1">{deliveryRateText}</p>
++            </div>
++          </div>
++        </section>
+ 
+-          <div className="glass-card p-6 text-left rounded-2xl border border-white/5 space-y-3">
+-            <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+-              <Award className="w-5 h-5" />
++        {/* Modern Tailoring Art & Craftsmanship Showcase */}
++        <section className="w-full max-w-5xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-12 gap-10 items-center relative z-10 bg-white/5 border border-white/10 hover:border-purple-500/30 rounded-3xl p-8 backdrop-blur-md transition-all duration-500 hover:shadow-2xl">
++          <div className="md:col-span-5 relative group">
++            {/* Ambient Backlight Glow */}
++            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-purple-600 to-blue-600 opacity-20 blur-lg group-hover:opacity-40 transition duration-500"></div>
++            
++            <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl bg-gray-900">
++              <img 
++                src="/tailor_workshop.png" 
++                alt="Premium Tailoring Studio" 
++                className="w-full h-auto object-cover rounded-2xl transform group-hover:scale-105 transition-transform duration-500"
++              />
++              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent opacity-80 pointer-events-none"></div>
++              <div className="absolute bottom-4 left-4 right-4 flex items-center space-x-2">
++                <Scissors className="w-4 h-4 text-purple-400" />
++                <span className="text-xs font-bold text-white tracking-wide uppercase">VastraSilai Studio</span>
++              </div>
++            </div>
++          </div>
++          
++          <div className="md:col-span-7 text-left space-y-5">
++            <span className="text-[10px] bg-purple-500/15 text-purple-300 font-extrabold px-3 py-1 rounded-full uppercase tracking-wider border border-purple-500/25">
++              {language === 'en' ? 'Craft & Technology' : language === 'hi' ? 'αñ╢αñ┐αñ▓αÑìαñ¬ αñöαñ░ αñ¬αÑìαñ░αÑîαñªαÑìαñ»αÑïαñùαñ┐αñòαÑÇ' : 'α░òα░│ & α░╕α░╛α░éα░òα▒çα░ñα░┐α░òα░ñ'}
++            </span>
++            
++            <h2 className="font-heading text-3xl font-black text-white tracking-tight leading-tight">
++              {language === 'en' ? 'Where Traditional Craft Meets Digital Precision' : 
++               language === 'hi' ? 'αñ£αñ╣αñ╛αñü αñ¬αñ╛αñ░αñéαñ¬αñ░αñ┐αñò αñ╢αñ┐αñ▓αÑìαñ¬ αñíαñ┐αñ£αñ┐αñƒαñ▓ αñ╕αñƒαÑÇαñòαññαñ╛ αñ╕αÑç αñ«αñ┐αñ▓αññαñ╛ αñ╣αÑê' : 
++               'α░╕α░╛α░éα░¬α▒ìα░░α░ªα░╛α░» α░òα░│ α░«α░░α░┐α░»α▒ü α░íα░┐α░£α░┐α░ƒα░▓α▒ì α░ûα░Üα▒ìα░Üα░┐α░ñα░ñα▒ìα░╡α░é α░òα░▓α░┐α░╕α▒ç α░Üα▒ïα░ƒα▒ü'}
++            </h2>
++            
++            <p className="text-sm text-gray-400 leading-relaxed font-sans">
++              {language === 'en' ? 'At VastraSilai, we honor the ancient art of custom tailoring while removing the friction of paper-based record-keeping. Our platform digitizes measurements with laser precision, handles payment ledgers, and sends automated alerts, giving you more time to focus on your creative craft.' : 
++               language === 'hi' ? 'αñ╡αñ╕αÑìαññαÑìαñ░αñ╕αñ┐αñ▓αñ╛αñê αñ«αÑçαñé, αñ╣αñ« αñòαñ╛αñùαñ£αÑÇ αñ░αñ┐αñòαÑëαñ░αÑìαñí αñ░αñûαñ¿αÑç αñòαÑÇ αñ¬αñ░αÑçαñ╢αñ╛αñ¿αÑÇ αñòαÑï αñªαÑéαñ░ αñòαñ░αññαÑç αñ╣αÑüαñÅ αñòαñ╕αÑìαñƒαñ« αñ╕αñ┐αñ▓αñ╛αñê αñòαÑÇ αñ¬αÑìαñ░αñ╛αñÜαÑÇαñ¿ αñòαñ▓αñ╛ αñòαñ╛ αñ╕αñ«αÑìαñ«αñ╛αñ¿ αñòαñ░αññαÑç αñ╣αÑêαñéαÑñ αñ╣αñ«αñ╛αñ░αñ╛ αñ¬αÑìαñ▓αÑçαñƒαñ½αñ╝αÑëαñ░αÑìαñ« αñ«αñ╛αñ¬αÑïαñé αñòαÑï αñíαñ┐αñ£αñ┐αñƒαñ▓ αñ░αÑéαñ¬ αñ╕αÑç αñ╕αñ╣αÑçαñ£αññαñ╛ αñ╣αÑê, αñ¡αÑüαñùαññαñ╛αñ¿ αñòαñ╛ αñ╣αñ┐αñ╕αñ╛αñ¼ αñ░αñûαññαñ╛ αñ╣αÑê αñöαñ░ αñùαÑìαñ░αñ╛αñ╣αñòαÑïαñé αñòαÑï αñåαñƒαÑïαñ«αÑçαñƒαñ┐αñò αñàαñ▓αñ░αÑìαñƒ αñ¡αÑçαñ£αññαñ╛ αñ╣αÑêαÑñ' : 
++               'α░╡α░╕α▒ìα░ñα▒ìα░░α░╕α░┐α░▓α▒ê α░╡α░ªα▒ìα░ª, α░«α▒çα░«α▒ü α░òα░╛α░ùα░┐α░ñα░¬α▒ü α░░α░┐α░òα░╛α░░α▒ìα░íα▒üα░▓ α░╢α▒ìα░░α░«α░¿α▒ü α░ñα▒èα░▓α░ùα░┐α░╕α▒ìα░ñα▒é α░╕α░╛α░éα░¬α▒ìα░░α░ªα░╛α░» α░ƒα▒êα░▓α░░α░┐α░éα░ùα▒ì α░òα░│α░¿α▒ü α░ùα▒îα░░α░╡α░┐α░╕α▒ìα░ñα░╛α░«α▒ü. α░«α░╛ α░¬α▒ìα░▓α░╛α░ƒα▒ìΓÇîα░½α░╛α░░α░«α▒ì α░òα▒èα░▓α░ñα░▓α░¿α▒ü α░íα░┐α░£α░┐α░ƒα░▓α▒ìΓÇîα░ùα░╛ α░╕α▒çα░╡α▒ì α░Üα▒çα░╕α▒ìα░ñα▒üα░éα░ªα░┐, α░¬α▒çα░«α▒åα░éα░ƒα▒ìα░▓α▒ü α░▓α▒åα░òα▒ìα░òα░┐α░╕α▒ìα░ñα▒üα░éα░ªα░┐ α░«α░░α░┐α░»α▒ü α░╕α▒ìα░╡α░»α░éα░Üα░╛α░▓α░ò α░àα░▓α░░α▒ìα░ƒα▒ìΓÇîα░▓α░¿α▒ü α░¬α░éα░¬α▒üα░ñα▒üα░éα░ªα░┐.'}
++            </p>
++            
++            {/* Checklist Grid directly matching the user's reference image */}
++            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 pt-4">
++              <div className="flex items-center space-x-3 text-gray-400 text-sm font-medium">
++                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
++                <span>{language === 'en' ? 'Eliminate paper record loss' : language === 'hi' ? 'αñòαñ╛αñùαñ£αñ╝ αñòαÑç αñ░αñ┐αñòαÑëαñ░αÑìαñí αñòαñ╛ αñûαÑïαñ¿αñ╛ αñ╕αñ«αñ╛αñ¬αÑìαññ αñòαñ░αÑçαñé' : 'α░òα░╛α░ùα░┐α░ñα░¬α▒ü α░¼α▒üα░òα▒ìα░╕α▒ì α░¬α▒ïα░»α▒ç α░╕α░«α░╕α▒ìα░» α░▓α▒çα░ªα▒ü'}</span>
++              </div>
++              <div className="flex items-center space-x-3 text-gray-400 text-sm font-medium">
++                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
++                <span>{language === 'en' ? 'Real-time customer status checks' : language === 'hi' ? 'αñ╡αñ╛αñ╕αÑìαññαñ╡αñ┐αñò αñ╕αñ«αñ» αñ«αÑçαñé αñùαÑìαñ░αñ╛αñ╣αñò αñ╕αÑìαñÑαñ┐αññαñ┐ αñ£αñ╛αñéαñÜ' : 'α░òα░╕α▒ìα░ƒα░«α░░α▒ì α░åα░░α▒ìα░íα░░α▒ì α░╕α▒ìα░Ñα░┐α░ñα░┐ α░ƒα▒ìα░░α░╛α░òα░┐α░éα░ùα▒ì'}</span>
++              </div>
++              <div className="flex items-center space-x-3 text-gray-400 text-sm font-medium">
++                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
++                <span>{language === 'en' ? 'Automated WhatsApp reminder runs' : language === 'hi' ? 'αñ╡αÑìαñ╣αñ╛αñƒαÑìαñ╕αñÅαñ¬ αñàαñ¿αÑüαñ╕αÑìαñ«αñ╛αñ░αñò αñ╕αÑìαñ╡αñÜαñ╛αñ▓αñ┐αññ αñ╕αñéαñªαÑçαñ╢' : 'α░åα░ƒα▒ïα░«α▒çα░ƒα░┐α░òα▒ì α░╡α░╛α░ƒα▒ìα░╕α░╛α░¬α▒ì α░░α░┐α░«α▒êα░éα░íα░░α▒ìα░▓α▒ü'}</span>
++              </div>
++              <div className="flex items-center space-x-3 text-gray-400 text-sm font-medium">
++                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
++                <span>{language === 'en' ? 'Secure localized translation controls' : language === 'hi' ? 'αñ╕αÑüαñ░αñòαÑìαñ╖αñ┐αññ αñ╕αÑìαñÑαñ╛αñ¿αÑÇαñ» αñàαñ¿αÑüαñ╡αñ╛αñª αñ¿αñ┐αñ»αñéαññαÑìαñ░αñú' : 'α░╕α▒ìα░Ñα░╛α░¿α░┐α░ò α░¡α░╛α░╖α░▓ α░àα░¿α▒üα░òα▒éα░▓ α░¿α░┐α░»α░éα░ñα▒ìα░░α░ú'}</span>
++              </div>
+             </div>
+-            <h3 className="text-white font-semibold text-lg">Supabase Storage</h3>
+-            <p className="text-sm text-gray-400">Your records are secure. No risk of torn or lost notebook pages.</p>
+           </div>
+         </section>
++
++        {/* Redesigned 8 Features Grid list with premium floating popup effects */}
++        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mt-24 relative z-10">
++          {features.map((feature) => (
++            <div 
++              key={feature.id}
++              onClick={() => setActiveFeature(feature)}
++              className={`popup-feature-card glass-card p-6 text-left rounded-3xl border border-white/5 space-y-4 shadow-xl hover:shadow-2xl transition-all duration-300 group ${feature.glowClass}`}
++            >
++              {/* Header inside Card */}
++              <div className="flex justify-between items-start">
++                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${feature.bgClass} border border-white/5 shadow-inner`}>
++                  {feature.icon}
++                </div>
++                {/* Visual Cue that this is a clickable Pop-Up feature card */}
++                <span className="text-[9px] font-bold text-gray-500 bg-white/5 border border-white/5 px-2 py-0.5 rounded-lg group-hover:text-purple-400 transition-colors uppercase tracking-widest">
++                  Info
++                </span>
++              </div>
++              
++              <div className="space-y-2">
++                <h3 className="text-white font-extrabold text-lg tracking-tight group-hover:text-purple-300 transition-colors">
++                  {feature.title}
++                </h3>
++                <p className="text-xs text-gray-400 leading-relaxed min-h-[48px]">
++                  {feature.desc}
++                </p>
++              </div>
++
++              {/* Decorative action hint at the bottom */}
++              <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-bold text-purple-400/80 group-hover:text-purple-300 transition-colors">
++                <span>{language === 'en' ? 'Explore details' : language === 'hi' ? 'αñ╡αñ┐αñ╡αñ░αñú αñªαÑçαñûαÑçαñé' : 'α░╡α░┐α░╡α░░α░╛α░▓α▒ü α░Üα▒éα░íα░éα░íα░┐'}</span>
++                <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform duration-300" />
++              </div>
++            </div>
++          ))}
++        </section>
+       </main>
+ 
++      {/* Detailed Popup Modal */}
++      {activeFeature && (
++        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
++          {/* Backdrop */}
++          <div 
++            className="absolute inset-0 modal-backdrop"
++            onClick={() => setActiveFeature(null)}
++          ></div>
++          
++          {/* Modal Content */}
++          <div className="w-full max-w-lg rounded-3xl p-8 relative z-10 modal-content-popup flex flex-col space-y-6 overflow-hidden">
++            {/* Decorative corner glow */}
++            <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-2xl opacity-20 bg-${activeFeature.color}-500 pointer-events-none`}></div>
++            
++            {/* Header */}
++            <div className="flex justify-between items-start">
++              <div className="flex items-center space-x-3.5">
++                <div className={`p-3.5 rounded-2xl flex items-center justify-center ${activeFeature.bgClass} border border-white/10`}>
++                  {activeFeature.icon}
++                </div>
++                <h3 className="text-white text-2xl font-black font-heading tracking-tight leading-tight">
++                  {activeFeature.title}
++                </h3>
++              </div>
++              <button 
++                onClick={() => setActiveFeature(null)}
++                className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-gray-400 hover:text-white rounded-xl transition cursor-pointer"
++              >
++                <X className="w-4 h-4" />
++              </button>
++            </div>
++            
++            {/* Detailed text */}
++            <div className="space-y-4">
++              <p className="text-sm text-gray-300 leading-relaxed font-sans">
++                {activeFeature.details[language] || activeFeature.details['en']}
++              </p>
++              
++              <div className="p-4 bg-white/5 border border-white/5 rounded-2xl space-y-1">
++                <span className="text-[10px] text-purple-400 font-extrabold uppercase tracking-widest">
++                  {language === 'en' ? 'Core Advantage' : language === 'hi' ? 'αñ«αÑüαñûαÑìαñ» αñ▓αñ╛αñ¡' : 'α░«α▒üα░ûα▒ìα░» α░¬α▒ìα░░α░»α▒ïα░£α░¿α░é'}
++                </span>
++                <p className="text-xs text-white font-medium">
++                  {activeFeature.benefit ? (activeFeature.benefit[language] || activeFeature.benefit['en']) : (
++                    language === 'en' ? 'Increases shop booking throughput and client satisfaction.' : 
++                    language === 'hi' ? 'αñªαÑüαñòαñ╛αñ¿ αñòαÑÇ αñ¼αÑüαñòαñ┐αñéαñù αñªαñòαÑìαñ╖αññαñ╛ αñöαñ░ αñùαÑìαñ░αñ╛αñ╣αñò αñ╕αñéαññαÑüαñ╖αÑìαñƒαñ┐ αñ¼αñóαñ╝αñ╛αññαñ╛ αñ╣αÑêαÑñ' : 
++                    'α░╖α░╛α░¬α▒ì α░¼α▒üα░òα░┐α░éα░ùα▒ì α░╕α░╛α░«α░░α▒ìα░Ñα▒ìα░»α░╛α░¿α▒ìα░¿α░┐ α░«α░░α░┐α░»α▒ü α░òα░╕α▒ìα░ƒα░«α░░α▒ì α░╕α░éα░ñα▒âα░¬α▒ìα░ñα░┐α░¿α░┐ α░¬α▒åα░éα░Üα▒üα░ñα▒üα░éα░ªα░┐.'
++                  )}
++                </p>
++              </div>
++            </div>
++            
++            {/* Footer / CTA inside modal */}
++            <div className="pt-2 flex space-x-3">
++              <button
++                onClick={() => {
++                  setActiveFeature(null);
++                  // contextual action depending on feature clicked
++                  if (activeFeature.id === 1) {
++                    document.getElementById('demo-widget')?.scrollIntoView({ behavior: 'smooth' });
++                  } else if (activeFeature.id === 3) {
++                    triggerWhatsappSimulation();
++                  } else if (activeFeature.id === 4) {
++                    onNavigate('customer_login');
++                  } else {
++                    onNavigate('login');
++                  }
++                }}
++                className={`flex-grow py-3 px-5 rounded-2xl font-bold text-xs text-white transition-all duration-300 shadow-md flex items-center justify-center space-x-1.5 cursor-pointer ${
++                  activeFeature.color === 'purple' ? 'bg-purple-600 hover:bg-purple-500 shadow-purple-600/20' :
++                  activeFeature.color === 'blue' ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20' :
++                  activeFeature.color === 'pink' ? 'bg-pink-600 hover:bg-pink-500 shadow-pink-600/20' :
++                  activeFeature.color === 'emerald' ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20' :
++                  'bg-amber-600 hover:bg-amber-500 shadow-amber-600/20'
++                }`}
++              >
++                <span>{activeFeature.actionText[language] || activeFeature.actionText['en']}</span>
++                <ArrowRight className="w-3.5 h-3.5" />
++              </button>
++              
++              <button 
++                onClick={() => setActiveFeature(null)}
++                className="py-3 px-5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-xs transition cursor-pointer"
++              >
++                {language === 'en' ? 'Close' : language === 'hi' ? 'αñ¼αñéαñª αñòαñ░αÑçαñé' : 'α░«α▒éα░╕α░┐α░╡α▒çα░»α░┐'}
++              </button>
++            </div>
++          </div>
++        </div>
++      )}
++
+       {/* Footer */}
+-      <footer className="border-t border-white/5 py-8 text-center text-gray-500 text-sm">
+-        <p>┬⌐ {new Date().getFullYear()} {t('appName')}. {t('tagline')}. Built for Local Tailors.</p>
++      <footer className="border-t border-white/5 py-8 text-center text-gray-500 text-sm bg-gray-950">
++        <p>Copyright ┬⌐ 2026 - 2028 | VastraSilai | All Rights Reserved</p>
+       </footer>
+     </div>
+   );

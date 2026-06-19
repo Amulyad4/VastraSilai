@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { ShoppingBag, CreditCard, Bell, Ruler, Clock, CheckCircle, Truck, RefreshCw, Scissors, ArrowLeft, Store, MapPin, AlertTriangle, Search } from 'lucide-react';
+import { ShoppingBag, CreditCard, Bell, Ruler, Clock, CheckCircle, Truck, RefreshCw, Scissors, ArrowLeft, Store, MapPin, AlertTriangle, Search, User } from 'lucide-react';
 import { API_URL } from '../context/AuthContext';
 
 export default function CustomerPortal() {
@@ -101,43 +101,43 @@ export default function CustomerPortal() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8 animate-fade-in text-left">
       {showWelcome && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm rounded-xl flex items-center justify-between animate-fade-in">
+        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-400 text-sm rounded-2xl flex items-center justify-between animate-fade-in">
           <div className="flex items-center space-x-2">
             <span className="text-lg">🎉</span>
-            <span className="font-semibold">Successfully registered! Welcome to your VastraSilai AI customer portal.</span>
+            <span className="font-extrabold">Successfully registered! Welcome to your VastraSilai AI customer portal.</span>
           </div>
-          <button onClick={() => setShowWelcome(false)} className="text-emerald-400 hover:text-emerald-300 font-bold ml-4">✕</button>
+          <button onClick={() => setShowWelcome(false)} className="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 font-bold ml-4">✕</button>
         </div>
       )}
 
       {/* Conditionally Render Header */}
       {!selectedTailor || loadingDetails || (dashboardData && !dashboardData.is_registered) ? (
         /* STANDARD WELCOME HEADER BAR (when not viewing a shop's dashboard) */
-        <div className="flex justify-between items-center bg-white/5 border border-white/10 p-5 rounded-3xl relative overflow-hidden backdrop-blur-md">
+        <div className="flex justify-between items-center bg-white/5 border border-white/10 p-5 rounded-3xl relative overflow-hidden backdrop-blur-md shadow-sm shadow-purple-550/5">
           <div className="absolute -left-12 -top-12 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl pointer-events-none"></div>
           <div className="flex items-center space-x-4">
-            <div className="p-3 bg-gradient-to-br from-purple-500/20 to-indigo-500/15 border border-purple-500/30 text-purple-400 rounded-2xl shadow-inner shadow-purple-950/20">
+            <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-650 text-white rounded-2xl shadow-md shadow-purple-500/15">
               <Scissors className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="font-heading text-lg font-extrabold text-white leading-tight">
+              <h1 className="font-heading text-lg font-black text-gray-850 dark:text-white leading-tight">
                 {t('welcomeCustomer', { name: user?.name })}
               </h1>
-              <p className="text-[10px] text-purple-400 font-bold uppercase tracking-wider mt-0.5">{t('customerDashboard')}</p>
+              <p className="text-[10px] text-purple-650 dark:text-purple-400 font-black uppercase tracking-wider mt-0.5">{t('customerDashboard')}</p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={handleRefresh}
-              className="p-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl border border-white/5 hover:border-purple-500/20 transition duration-300 cursor-pointer flex items-center justify-center hover:scale-105 active:scale-95"
+              className="p-2.5 bg-purple-600/5 hover:bg-purple-600/10 dark:bg-white/5 dark:hover:bg-white/10 text-gray-700 dark:text-gray-400 hover:text-purple-600 dark:hover:text-white rounded-xl border border-purple-500/10 hover:border-purple-500/30 dark:border-white/5 dark:hover:border-purple-500/30 transition duration-300 cursor-pointer flex items-center justify-center hover:scale-105 active:scale-95"
               title="Refresh"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
             <button
               onClick={logout}
-              className="bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 hover:border-red-500/40 rounded-xl px-4 py-2 text-xs font-extrabold tracking-wider uppercase transition duration-300 cursor-pointer hover:scale-105 active:scale-95"
+              className="bg-red-550/10 hover:bg-red-550/20 dark:bg-red-600/10 dark:hover:bg-red-600/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20 hover:border-red-550/30 dark:hover:border-red-500/40 rounded-xl px-4 py-2.5 text-xs font-black tracking-wider uppercase transition duration-300 cursor-pointer hover:scale-105 active:scale-95"
             >
               {t('logout')}
             </button>
@@ -145,7 +145,7 @@ export default function CustomerPortal() {
         </div>
       ) : (
         /* UNIFIED RECORD VIEW HEADER (when viewing dashboard) */
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-gradient-to-r from-purple-900/20 via-indigo-900/15 to-transparent border border-white/10 p-6 rounded-3xl backdrop-blur-md relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-gradient-to-r from-purple-900/10 via-indigo-900/5 to-transparent dark:from-purple-900/20 dark:via-indigo-900/15 dark:to-transparent border border-purple-500/15 dark:border-white/10 p-6 rounded-3xl backdrop-blur-md relative overflow-hidden shadow-sm shadow-purple-550/5">
           {/* Ambient Background Glow */}
           <div className="absolute -right-24 -top-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
           <div className="absolute -left-24 -bottom-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -153,25 +153,25 @@ export default function CustomerPortal() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {/* Back button */}
             <button
-              onClick={handleBack}
-              className="p-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-2xl border border-white/5 hover:border-purple-500/30 transition duration-300 cursor-pointer flex items-center justify-center hover:scale-105 active:scale-95 shadow-md self-start"
-              title="Go back to shops"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+               onClick={handleBack}
+               className="p-3 bg-purple-600/5 hover:bg-purple-600/10 dark:bg-white/5 dark:hover:bg-white/10 text-gray-700 hover:text-purple-600 dark:text-gray-300 dark:hover:text-white rounded-2xl border border-purple-500/10 hover:border-purple-500/30 dark:border-white/5 dark:hover:border-purple-500/30 transition duration-300 cursor-pointer flex items-center justify-center hover:scale-105 active:scale-95 shadow-md self-start group back-to-list-btn"
+               title="Go back to shops"
+             >
+               <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:text-purple-600 dark:text-gray-300 dark:group-hover:text-white transition-colors" />
+             </button>
             
             <div className="flex items-center space-x-4">
               {/* Avatar with dynamic initials and premium gradient */}
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-purple-950/50 border border-purple-400/30">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-650 flex items-center justify-center text-white font-bold text-lg shadow-lg border border-purple-400/30">
                 {(dashboardData?.customer_name || user?.name || 'C').charAt(0).toUpperCase()}
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white font-heading mt-1 leading-tight tracking-tight">
+                <h2 className="text-2xl font-black text-gray-850 dark:text-white font-heading mt-1 leading-tight tracking-tight">
                   {dashboardData?.customer_name || user?.name}
                 </h2>
-                <p className="text-xs text-gray-400 font-medium mt-1 flex items-center">
+                <p className="text-xs text-gray-550 dark:text-gray-400 font-bold mt-1 flex items-center">
                   <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
-                  Linked Phone: <span className="text-gray-300 font-semibold ml-1">{user?.phone}</span>
+                  Linked Phone: <span className="text-gray-700 dark:text-gray-350 font-extrabold ml-1">{user?.phone}</span>
                 </p>
               </div>
             </div>
@@ -180,27 +180,27 @@ export default function CustomerPortal() {
           {/* Right Section: Tailor Shop details & Actions */}
           <div className="flex flex-wrap items-center gap-4">
             {/* Tailor Shop details pill */}
-            <div className="flex items-center space-x-3 bg-white/5 border border-white/5 py-2.5 px-4 rounded-2xl">
-              <div className="p-2 bg-purple-500/10 text-purple-400 rounded-xl">
-                <Store className="w-4 h-4" />
+            <div className="flex items-center space-x-3 bg-purple-600/5 dark:bg-white/5 border border-purple-500/10 dark:border-white/5 py-2.5 px-4 rounded-2xl">
+              <div className="p-2 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-xl">
+                <Store className="w-4 h-4" strokeWidth={2.5} />
               </div>
               <div className="text-left">
-                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block">Tailor Shop</span>
-                <span className="text-xs font-bold text-white block mt-0.5">{selectedTailor.shop_name || selectedTailor.name}</span>
+                <span className="text-[9px] text-purple-650 dark:text-purple-450 font-black uppercase tracking-wider block">Tailor Shop</span>
+                <span className="text-xs font-black text-gray-900 dark:text-white block mt-0.5">{selectedTailor.shop_name || selectedTailor.name}</span>
               </div>
             </div>
 
             <div className="flex items-center space-x-2">
               <button
                 onClick={handleRefresh}
-                className="p-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl border border-white/5 hover:border-purple-500/20 transition duration-300 cursor-pointer flex items-center justify-center hover:scale-105 active:scale-95"
+                className="p-2.5 bg-purple-600/5 hover:bg-purple-600/10 dark:bg-white/5 dark:hover:bg-white/10 text-gray-700 dark:text-gray-450 hover:text-purple-600 dark:hover:text-white rounded-xl border border-purple-500/10 hover:border-purple-500/30 dark:border-white/5 dark:hover:border-purple-500/30 transition duration-300 cursor-pointer flex items-center justify-center hover:scale-105 active:scale-95"
                 title="Refresh"
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
               <button
                 onClick={logout}
-                className="bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 hover:border-red-500/40 rounded-xl px-4 py-2.5 text-xs font-extrabold tracking-wider uppercase transition duration-300 cursor-pointer hover:scale-105 active:scale-95"
+                className="bg-red-550/10 hover:bg-red-550/20 dark:bg-red-600/10 dark:hover:bg-red-600/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20 hover:border-red-550/30 dark:hover:border-red-500/40 rounded-xl px-4 py-2.5 text-xs font-black tracking-wider uppercase transition duration-300 cursor-pointer hover:scale-105 active:scale-95"
               >
                 {t('logout')}
               </button>
@@ -214,19 +214,19 @@ export default function CustomerPortal() {
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold text-white font-heading">Select Your Tailor Shop</h2>
-              <p className="text-sm text-gray-400">Choose a shop below to view your tailoring records, measurements, and orders.</p>
+              <h2 className="text-2xl font-black text-gray-800 dark:text-white font-heading tracking-tight">Select Your Tailor Shop</h2>
+              <p className="text-sm text-gray-550 dark:text-gray-400">Choose a shop below to view your tailoring records, measurements, and orders.</p>
             </div>
             
             {/* Search Filter input */}
-            <div className="relative w-full md:w-80 group">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 group-focus-within:text-purple-400 transition-colors duration-200" />
+            <div className="relative w-full md:w-[480px] group">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-600 dark:text-gray-400 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-400 transition-colors duration-200" strokeWidth={3} />
               <input
                 type="text"
                 value={shopFilter}
                 onChange={(e) => setShopFilter(e.target.value)}
                 placeholder="Search by shop, tailor, or location..."
-                className="w-full glass-input pl-11 pr-4 py-2.5 rounded-xl text-sm text-white transition-all duration-200"
+                className="w-full glass-input pl-11 pr-4 py-2.5 rounded-xl text-sm text-black dark:text-white transition-all duration-200"
               />
             </div>
           </div>
@@ -242,31 +242,37 @@ export default function CustomerPortal() {
                 <div
                   key={tailor.id}
                   onClick={() => selectTailorShop(tailor)}
-                  className="glass-panel p-6 rounded-3xl border border-white/5 hover:border-purple-500/30 transition shadow-lg hover:shadow-purple-950/10 cursor-pointer flex flex-col justify-between group animate-fade-in"
+                  className="glass-card p-6 rounded-3xl border border-white/5 cursor-pointer flex flex-col justify-between group animate-fade-in relative overflow-hidden min-h-[190px]"
                 >
+                  {/* Premium top accent line */}
+                  <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 pointer-events-none rounded-t-3xl"></div>
+
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-purple-600/10 text-purple-400 rounded-2xl group-hover:bg-purple-600/20 transition">
-                        <Store className="w-6 h-6" />
+                      <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-650 text-white rounded-2xl shadow-md shadow-purple-500/15 group-hover:scale-105 transition-all duration-350">
+                        <Store className="w-5 h-5" strokeWidth={2.2} />
                       </div>
-                      <span className="text-[10px] text-purple-400 font-bold bg-purple-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      <span className="text-[10px] text-purple-650 dark:text-purple-400 font-black bg-purple-500/10 px-2.5 py-1 rounded-full uppercase tracking-wider">
                         Tailor Shop
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-bold text-white group-hover:text-purple-300 transition">
+                      <h3 className="text-lg font-black text-gray-850 dark:text-white group-hover:text-purple-650 dark:group-hover:text-purple-300 transition-colors duration-250">
                         {tailor.shop_name || `${tailor.name}'s Shop`}
                       </h3>
-                      <p className="text-xs text-gray-400 font-semibold mt-1">
-                        Tailor: <span className="text-gray-300">{tailor.name}</span>
+                      <p className="text-xs text-gray-550 dark:text-gray-400 font-bold mt-2 flex items-center space-x-1.5">
+                        <User className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400/80" strokeWidth={2.5} />
+                        <span>Tailor: <strong className="text-gray-700 dark:text-gray-300 font-extrabold">{tailor.name}</strong></span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="border-t border-white/5 pt-4 mt-6 flex items-center text-xs text-gray-500 font-semibold">
-                    <MapPin className="w-4 h-4 text-purple-400/60 mr-1.5 flex-shrink-0" />
-                    <span className="truncate">{tailor.address || "Address not provided"}</span>
+                  <div className="border-t border-purple-500/10 dark:border-white/5 pt-4 mt-6 flex items-center text-xs text-gray-500 dark:text-gray-400 font-bold">
+                    <div className="flex items-center bg-purple-500/5 dark:bg-white/5 px-2.5 py-1 rounded-lg max-w-full">
+                      <MapPin className="w-3.5 h-3.5 text-purple-500 dark:text-purple-450 mr-1.5 flex-shrink-0" strokeWidth={2.5} />
+                      <span className="truncate text-gray-750 dark:text-gray-300">{tailor.address || "Address not provided"}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -308,73 +314,80 @@ export default function CustomerPortal() {
 
           {/* KPI stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <div className="glass-panel p-6 rounded-2xl flex items-center space-x-4">
-              <div className="p-3 bg-purple-600/10 text-purple-400 rounded-xl">
-                <ShoppingBag className="w-6 h-6" />
+            
+            {/* Active Orders */}
+            <div className="glass-panel p-6 rounded-3xl flex items-center space-x-4 analytics-kpi-card kpi-purple">
+              <div className="p-3 bg-purple-100 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 rounded-2xl shadow-sm shadow-purple-650/5">
+                <ShoppingBag className="w-6 h-6" strokeWidth={2.2} />
               </div>
               <div>
-                <span className="text-xs text-gray-500 font-semibold uppercase">{t('cardOrders')}</span>
-                <h3 className="text-2xl font-bold text-white tracking-tight mt-0.5">{dashboardData?.orders.length}</h3>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-extrabold uppercase tracking-wider">{t('cardOrders')}</span>
+                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mt-0.5">{dashboardData?.orders.length}</h3>
               </div>
             </div>
 
-            <div className="glass-panel p-6 rounded-2xl flex items-center space-x-4">
-              <div className="p-3 bg-amber-600/10 text-amber-400 rounded-xl">
-                <CreditCard className="w-6 h-6" />
+            {/* Remaining Balance */}
+            <div className="glass-panel p-6 rounded-3xl flex items-center space-x-4 analytics-kpi-card kpi-blue">
+              <div className="p-3 bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm shadow-blue-650/5">
+                <CreditCard className="w-6 h-6" strokeWidth={2.2} />
               </div>
               <div>
-                <span className="text-xs text-gray-500 font-semibold uppercase">{t('remainingBalance')}</span>
-                <h3 className="text-2xl font-bold text-amber-400 tracking-tight mt-0.5">
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-extrabold uppercase tracking-wider">{t('remainingBalance')}</span>
+                <h3 className="text-3xl font-black text-amber-600 dark:text-amber-400 tracking-tight mt-0.5">
                   ₹{dashboardData?.orders.reduce((sum, o) => sum + o.balance_amount, 0) || 0}
                 </h3>
               </div>
             </div>
 
-            <div className="glass-panel p-6 rounded-2xl flex items-center space-x-4">
-              <div className="p-3 bg-pink-600/10 text-pink-400 rounded-xl relative">
-                <Bell className="w-6 h-6" />
+            {/* Active Alerts */}
+            <div className="glass-panel p-6 rounded-3xl flex items-center space-x-4 analytics-kpi-card kpi-pink">
+              <div className="p-3 bg-pink-100 dark:bg-pink-950/40 text-pink-600 dark:text-pink-400 rounded-2xl shadow-sm shadow-pink-655/5 relative">
+                <Bell className="w-6 h-6" strokeWidth={2.2} />
                 {dashboardData?.notifications.length > 0 && (
                   <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping"></span>
                 )}
               </div>
               <div>
-                <span className="text-xs text-gray-500 font-semibold uppercase">Active Alerts</span>
-                <h3 className="text-2xl font-bold text-white tracking-tight mt-0.5">{dashboardData?.notifications.length}</h3>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-extrabold uppercase tracking-wider">Active Alerts</span>
+                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mt-0.5">{dashboardData?.notifications.length}</h3>
               </div>
             </div>
+
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
             {/* Left Col: Order Tracking */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 text-left">
               <div className="flex items-center space-x-2 pb-2">
-                <ShoppingBag className="w-5 h-5 text-purple-400" />
-                <h2 className="font-heading text-lg font-bold text-white">{t('trackOrderStatus')}</h2>
+                <ShoppingBag className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <h2 className="font-heading text-lg font-black text-gray-800 dark:text-white">{t('trackOrderStatus')}</h2>
               </div>
 
               {dashboardData?.orders.length === 0 ? (
-                <div className="glass-panel p-12 rounded-3xl border border-white/5 text-center text-gray-500 text-sm">
+                <div className="glass-card p-12 rounded-3xl border border-white/5 text-center text-gray-500 text-sm">
                   <ShoppingBag className="w-10 h-10 text-gray-600 mx-auto mb-2" />
                   <p>No active orders found at this tailor shop.</p>
                 </div>
               ) : (
                 <div className="space-y-6">
                   {dashboardData?.orders.map(order => (
-                    <div key={order.id} className="glass-panel p-6 rounded-3xl border border-white/5 space-y-6">
+                    <div key={order.id} className="glass-card p-6 rounded-3xl border border-white/5 space-y-6 relative overflow-hidden">
+                      {/* Premium top accent line */}
+                      <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 pointer-events-none rounded-t-3xl"></div>
                       
                       {/* Title & Price */}
-                      <div className="flex justify-between items-start border-b border-white/5 pb-4">
+                      <div className="flex justify-between items-start border-b border-purple-500/10 dark:border-white/5 pb-4">
                         <div>
-                          <span className="text-xs text-purple-400 font-bold bg-purple-500/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">{t(order.cloth_type)}</span>
-                          <h3 className="text-lg font-bold text-white mt-1">Order Number: #{1000 + order.id}</h3>
+                          <span className="text-xs text-purple-650 dark:text-purple-400 font-black bg-purple-550/10 px-3 py-1 rounded-full uppercase tracking-wider">{t(order.cloth_type)}</span>
+                          <h3 className="text-lg font-black text-gray-850 dark:text-white mt-2.5">Order Number: #{1000 + order.id}</h3>
                           {order.description && (
-                            <p className="text-xs text-gray-400 mt-1.5 italic">{order.description}</p>
+                            <p className="text-xs text-gray-550 dark:text-gray-400 mt-2 font-medium italic">{order.description}</p>
                           )}
                         </div>
                         <div className="text-right">
-                          <span className="text-[10px] text-gray-500 font-semibold uppercase">Price</span>
-                          <h4 className="text-xl font-bold text-white">₹{order.total_amount}</h4>
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-wider block">Price</span>
+                          <h4 className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">₹{order.total_amount}</h4>
                         </div>
                       </div>
 
@@ -382,65 +395,65 @@ export default function CustomerPortal() {
                       <div className="space-y-4 py-2">
                         <div className="relative flex justify-between">
                           {/* Tracking background line */}
-                          <div className="absolute top-3.5 left-0 right-0 h-1 bg-white/5 -z-10 rounded-full"></div>
+                          <div className="absolute top-3.5 left-0 right-0 h-1 bg-purple-600/5 dark:bg-white/5 -z-10 rounded-full"></div>
                           <div 
-                            className="absolute top-3.5 left-0 h-1 bg-purple-500 -z-10 rounded-full transition-all duration-500"
+                            className="absolute top-3.5 left-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-650 -z-10 rounded-full transition-all duration-500"
                             style={{ width: getProgressPercent(order.status) }}
                           ></div>
 
                           {/* Step 1: Order Created */}
-                          <div className="flex flex-col items-center text-center space-y-1 z-10">
+                          <div className="flex flex-col items-center text-center space-y-1.5 z-10">
                             <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${
                               order.status === 'Pending' 
-                                ? 'bg-amber-500 border-amber-400 text-gray-950 scale-110 shadow-lg shadow-amber-950/20' 
+                                ? 'bg-gradient-to-br from-purple-500 to-indigo-600 border-purple-400 text-white scale-110 shadow-lg shadow-purple-500/20' 
                                 : 'bg-purple-600 border-purple-500 text-white'
                             }`}>
                               <Clock className="w-4 h-4" />
                             </div>
-                            <span className={`text-[10px] font-bold ${order.status === 'Pending' ? 'text-amber-400' : 'text-gray-400'}`}>
+                            <span className={`text-[10px] font-black uppercase tracking-wider ${order.status === 'Pending' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-450 dark:text-gray-500'}`}>
                               Order Created
                             </span>
                           </div>
 
                           {/* Step 2: Stitching Started */}
-                          <div className="flex flex-col items-center text-center space-y-1 z-10">
+                          <div className="flex flex-col items-center text-center space-y-1.5 z-10">
                             <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${
                               order.status === 'In Progress'
-                                ? 'bg-amber-500 border-amber-400 text-gray-950 scale-110 shadow-lg shadow-amber-950/20'
+                                ? 'bg-gradient-to-br from-purple-500 to-indigo-600 border-purple-400 text-white scale-110 shadow-lg shadow-purple-500/20'
                                 : ['In Progress', 'Ready', 'Delivered'].includes(order.status)
                                   ? 'bg-purple-600 border-purple-500 text-white'
-                                  : 'bg-gray-900 border-white/10 text-gray-500'
+                                  : 'bg-purple-600/5 dark:bg-gray-900 border-purple-550/10 dark:border-white/10 text-gray-400 dark:text-gray-500'
                             }`}>
                               <Scissors className="w-4 h-4" />
                             </div>
-                            <span className={`text-[10px] font-bold ${
+                            <span className={`text-[10px] font-black uppercase tracking-wider ${
                               order.status === 'In Progress' 
-                                ? 'text-amber-400' 
+                                ? 'text-purple-600 dark:text-purple-400' 
                                 : ['In Progress', 'Ready', 'Delivered'].includes(order.status)
-                                  ? 'text-gray-400'
-                                  : 'text-gray-500'
+                                  ? 'text-gray-600 dark:text-gray-400'
+                                  : 'text-gray-450 dark:text-gray-500'
                             }`}>
                               Stitching Started
                             </span>
                           </div>
 
                           {/* Step 3: Ready */}
-                          <div className="flex flex-col items-center text-center space-y-1 z-10">
+                          <div className="flex flex-col items-center text-center space-y-1.5 z-10">
                             <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${
                               order.status === 'Ready'
-                                ? 'bg-amber-500 border-amber-400 text-gray-950 scale-110 shadow-lg shadow-amber-950/20'
+                                ? 'bg-gradient-to-br from-purple-500 to-indigo-600 border-purple-400 text-white scale-110 shadow-lg shadow-purple-500/20'
                                 : ['Ready', 'Delivered'].includes(order.status)
                                   ? 'bg-purple-600 border-purple-500 text-white'
-                                  : 'bg-gray-900 border-white/10 text-gray-500'
+                                  : 'bg-purple-600/5 dark:bg-gray-900 border-purple-550/10 dark:border-white/10 text-gray-400 dark:text-gray-500'
                             }`}>
                               <CheckCircle className="w-4 h-4" />
                             </div>
-                            <span className={`text-[10px] font-bold ${
+                            <span className={`text-[10px] font-black uppercase tracking-wider ${
                               order.status === 'Ready' 
-                                ? 'text-amber-400' 
+                                ? 'text-purple-600 dark:text-purple-400' 
                                 : ['Ready', 'Delivered'].includes(order.status)
-                                  ? 'text-gray-400'
-                                  : 'text-gray-500'
+                                  ? 'text-gray-600 dark:text-gray-400'
+                                  : 'text-gray-455 dark:text-gray-500'
                             }`}>
                               Ready
                             </span>
@@ -449,20 +462,20 @@ export default function CustomerPortal() {
                       </div>
 
                       {/* Order Details */}
-                      <div className="border-t border-white/5 pt-4 space-y-4">
-                        <div className="flex items-center space-x-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                          <Clock className="w-3.5 h-3.5 text-purple-400" />
+                      <div className="border-t border-purple-500/10 dark:border-white/5 pt-4 space-y-4">
+                        <div className="flex items-center space-x-1.5 text-xs font-black text-gray-550 dark:text-gray-400 uppercase tracking-wider">
+                          <Clock className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" strokeWidth={2.5} />
                           <span>Order Pricing Details</span>
                         </div>
                         
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-white/5 border border-white/5 p-3 rounded-2xl">
-                            <span className="text-gray-500 block uppercase font-semibold text-[9px] mb-0.5">{t('amountPaid').replace(' (₹)', '')}</span>
-                            <strong className="text-emerald-400 text-xs font-semibold">₹{order.advance_amount}</strong>
+                          <div className="bg-purple-600/5 dark:bg-white/5 border border-purple-500/10 dark:border-white/5 p-3.5 rounded-2xl">
+                            <span className="text-gray-500 dark:text-gray-400 block uppercase font-bold text-[9px] mb-0.5">{t('amountPaid').replace(' (₹)', '')}</span>
+                            <strong className="text-emerald-600 dark:text-emerald-400 text-base font-black">₹{order.advance_amount}</strong>
                           </div>
-                          <div className="bg-white/5 border border-white/5 p-3 rounded-2xl">
-                            <span className="text-gray-500 block uppercase font-semibold text-[9px] mb-0.5">{t('remainingBalance')}</span>
-                            <strong className={`text-xs font-semibold ${order.balance_amount > 0 ? 'text-amber-400' : 'text-gray-400'}`}>
+                          <div className="bg-purple-600/5 dark:bg-white/5 border border-purple-500/10 dark:border-white/5 p-3.5 rounded-2xl">
+                            <span className="text-gray-500 dark:text-gray-400 block uppercase font-bold text-[9px] mb-0.5">{t('remainingBalance')}</span>
+                            <strong className={`text-base font-black ${order.balance_amount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-605 dark:text-gray-400'}`}>
                               ₹{order.balance_amount}
                             </strong>
                           </div>
@@ -470,21 +483,21 @@ export default function CustomerPortal() {
                       </div>
 
                       {/* Booking & Delivery Date card */}
-                      <div className="bg-white/5 border border-white/5 p-4 rounded-2xl text-xs flex justify-between items-center gap-4">
+                      <div className="bg-purple-600/5 dark:bg-white/5 border border-purple-500/10 dark:border-white/5 p-4 rounded-2xl text-xs flex justify-between items-center gap-4 font-bold">
                         <div className="flex space-x-6 sm:space-x-12">
                           <div>
-                            <span className="text-gray-500 block uppercase font-semibold text-[9px] mb-0.5">{t('booked')}</span>
-                            <strong className="text-white font-heading text-xs sm:text-sm">{order.order_date}</strong>
+                            <span className="text-gray-500 dark:text-gray-400 block uppercase font-bold text-[9px] mb-0.5">{t('booked')}</span>
+                            <strong className="text-gray-800 dark:text-white font-heading text-xs sm:text-sm font-black">{order.order_date}</strong>
                           </div>
                           <div>
-                            <span className="text-gray-500 block uppercase font-semibold text-[9px] mb-0.5">{t('deliveryDate')}</span>
-                            <strong className="text-purple-400 font-heading text-xs sm:text-sm">{order.delivery_date}</strong>
+                            <span className="text-gray-500 dark:text-gray-400 block uppercase font-bold text-[9px] mb-0.5">{t('deliveryDate')}</span>
+                            <strong className="text-purple-650 dark:text-purple-400 font-heading text-xs sm:text-sm font-black">{order.delivery_date}</strong>
                           </div>
                         </div>
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          order.payment_status === 'Paid' ? 'bg-emerald-500/10 text-emerald-400' :
-                          order.payment_status === 'Partially Paid' ? 'bg-amber-500/10 text-amber-400' :
-                          'bg-red-500/10 text-red-400'
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black border uppercase tracking-wider ${
+                          order.payment_status === 'Paid' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' :
+                          order.payment_status === 'Partially Paid' ? 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-400' :
+                          'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400'
                         }`}>
                           {order.payment_status === 'Paid' ? t('paymentPaid') :
                            order.payment_status === 'Partially Paid' ? t('paymentPartiallyPaid') :
@@ -494,13 +507,13 @@ export default function CustomerPortal() {
 
                       {/* Payment installments history */}
                       {order.payments && order.payments.length > 0 && (
-                        <div className="space-y-2">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Payment Installments Logs</span>
-                          <div className="space-y-1.5">
+                        <div className="space-y-2.5">
+                          <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider block">Payment Installments Logs</span>
+                          <div className="space-y-2">
                             {order.payments.map((p, idx) => (
-                              <div key={p.id} className="flex justify-between items-center text-xs py-1.5 border-t border-white/5 text-gray-300">
+                              <div key={p.id} className="flex justify-between items-center text-xs py-2 px-3 border border-purple-500/5 dark:border-white/5 text-gray-700 dark:text-gray-300 font-bold bg-purple-500/5 dark:bg-white/5 rounded-xl">
                                 <span>Installment #{idx + 1} ({p.payment_method})</span>
-                                <span className="font-bold text-emerald-400">+ ₹{p.amount}</span>
+                                <span className="font-black text-emerald-600 dark:text-emerald-450">+ ₹{p.amount}</span>
                               </div>
                             ))}
                           </div>
@@ -517,20 +530,20 @@ export default function CustomerPortal() {
             <div className="space-y-6">
               
               {/* Notifications feed */}
-              <div className="glass-panel p-6 rounded-3xl border border-white/5 space-y-4">
-                <div className="flex items-center space-x-2 border-b border-white/5 pb-3">
-                  <Bell className="w-5 h-5 text-purple-400" />
-                  <h3 className="text-lg font-bold text-white font-heading">Reminders & Alerts</h3>
+              <div className="glass-card p-6 rounded-3xl border border-white/5 space-y-4">
+                <div className="flex items-center space-x-2 border-b border-purple-500/10 dark:border-white/5 pb-3">
+                  <Bell className="w-5 h-5 text-purple-650 dark:text-purple-400" />
+                  <h3 className="text-lg font-black text-gray-800 dark:text-white font-heading">Reminders & Alerts</h3>
                 </div>
 
                 {dashboardData?.notifications.length === 0 ? (
-                  <p className="text-xs text-gray-500 py-6 text-center">{t('noNotifications')}</p>
+                  <p className="text-xs text-gray-550 dark:text-gray-500 py-6 text-center">{t('noNotifications')}</p>
                 ) : (
                   <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1">
                     {dashboardData?.notifications.map(n => (
-                      <div key={n.id} className="bg-white/5 border border-white/5 p-3 rounded-xl space-y-1 text-xs">
-                        <div className="font-bold text-white">{n.title}</div>
-                        <p className="text-[11px] text-gray-400">{n.message}</p>
+                      <div key={n.id} className="bg-purple-600/5 dark:bg-white/5 border border-purple-550/10 dark:border-white/5 p-3 rounded-2xl space-y-1 text-xs">
+                        <div className="font-extrabold text-gray-800 dark:text-white">{n.title}</div>
+                        <p className="text-[11px] text-gray-650 dark:text-gray-400 font-medium">{n.message}</p>
                       </div>
                     ))}
                   </div>
@@ -539,10 +552,10 @@ export default function CustomerPortal() {
 
               {/* Customer measurements viewer */}
               {dashboardData?.measurements && (
-                <div className="glass-panel p-6 rounded-3xl border border-white/5 space-y-4">
-                  <div className="flex items-center space-x-2 border-b border-white/5 pb-3">
-                    <Ruler className="w-5 h-5 text-purple-400" />
-                    <h3 className="text-lg font-bold text-white font-heading">{t('measurementsTitle')}</h3>
+                <div className="glass-card p-6 rounded-3xl border border-white/5 space-y-4">
+                  <div className="flex items-center space-x-2 border-b border-purple-500/10 dark:border-white/5 pb-3">
+                    <Ruler className="w-5 h-5 text-purple-600 dark:text-purple-400" strokeWidth={2.5} />
+                    <h3 className="text-lg font-black text-gray-805 dark:text-white font-heading">{t('measurementsTitle')}</h3>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
@@ -555,9 +568,9 @@ export default function CustomerPortal() {
                       { key: 'neck', label: t('neck') },
                       { key: 'hip', label: t('hip') }
                     ].map(field => (
-                      <div key={field.key} className="flex justify-between items-center bg-white/5 p-2 rounded-lg border border-white/5">
-                        <span className="text-[10px] text-gray-500 uppercase">{field.label.split(' ')[0]}</span>
-                        <strong className="text-white">
+                      <div key={field.key} className="measurement-card flex justify-between items-center p-2.5 rounded-xl border transition-all duration-300 hover:scale-[1.01]">
+                        <span className="measurement-label text-[10px] font-black uppercase tracking-wider">{field.label.split(' ')[0]}</span>
+                        <strong className="text-gray-800 dark:text-white font-black text-sm">
                           {dashboardData.measurements[field.key] ? `${dashboardData.measurements[field.key]}"` : '-'}
                         </strong>
                       </div>
@@ -565,20 +578,20 @@ export default function CustomerPortal() {
                   </div>
 
                   {dashboardData.measurements.notes && (
-                    <div className="text-xs bg-white/5 p-3 rounded-xl border border-white/5 text-gray-400 text-left">
-                      <span className="font-bold text-white block mb-1">Tailor Notes:</span>
-                      {dashboardData.measurements.notes}
+                    <div className="measurement-card p-3.5 rounded-xl border text-xs text-gray-700 dark:text-gray-300 text-left transition-all duration-300">
+                      <span className="measurement-label text-xs font-black uppercase tracking-wider block mb-1">Tailor Notes</span>
+                      <p>{dashboardData.measurements.notes}</p>
                     </div>
                   )}
 
                   {dashboardData.measurements.reference_image_url && (
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Reference Sketch</span>
-                      <div className="bg-white/5 border border-white/5 rounded-xl p-2 h-32 flex items-center justify-center overflow-hidden">
+                    <div className="space-y-1.5 text-left">
+                      <span className="measurement-label text-[10px] font-black uppercase tracking-wider block">Reference Sketch</span>
+                      <div className="measurement-card border rounded-xl p-2 h-32 flex items-center justify-center overflow-hidden transition-all duration-300">
                         <img
                           src={dashboardData.measurements.reference_image_url}
                           alt="Reference Sketch"
-                          className="max-h-full object-contain rounded"
+                          className="max-h-full object-contain rounded-lg shadow-sm"
                         />
                       </div>
                     </div>

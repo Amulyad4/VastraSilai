@@ -13,6 +13,22 @@ export default function OrdersPage() {
   const [typeFilter, setTypeFilter] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const getGarmentBadge = (type) => {
+    const tType = type.toLowerCase();
+    if (tType === 'shirt') return 'bg-purple-50 text-purple-700 dark:bg-purple-950/20 dark:text-purple-400 border-purple-100 dark:border-purple-900/30';
+    if (tType === 'pant') return 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30';
+    if (tType === 'blouse') return 'bg-pink-50 text-pink-700 dark:bg-pink-950/20 dark:text-pink-400 border-pink-100 dark:border-pink-900/30';
+    if (tType === 'kurta') return 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 border-amber-100 dark:border-amber-900/30';
+    return 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/30';
+  };
+
+  const getStatusSelectClass = (status) => {
+    if (status === 'Pending') return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30';
+    if (status === 'In Progress') return 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/30';
+    if (status === 'Ready') return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30';
+    return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-white/5 dark:text-white dark:border-white/10';
+  };
+
   // Create Order Modal States
   const [showAddModal, setShowAddModal] = useState(false);
   const [customerName, setCustomerName] = useState('');
@@ -185,30 +201,75 @@ export default function OrdersPage() {
       {/* Header row */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="font-heading text-3xl font-extrabold text-white tracking-tight">{t('orderList')}</h2>
-          <p className="text-gray-400 text-sm">Monitor stitching statuses and payment balances</p>
+          <h2 className="font-heading text-3xl font-black text-gray-800 dark:text-white tracking-tight">{t('orderList')}</h2>
+          <p className="text-gray-550 dark:text-gray-400 text-sm">Monitor stitching statuses and payment balances</p>
         </div>
         <button
           onClick={() => { clearOrderForm(); setShowAddModal(true); }}
-          className="neon-btn text-white rounded-xl px-5 py-2.5 text-sm font-bold flex items-center space-x-1.5 shadow-lg shadow-purple-950/20 cursor-pointer"
+          className="neon-btn text-white rounded-2xl px-7 py-3.5 text-base font-black tracking-wide shadow-lg shadow-purple-950/20 cursor-pointer transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
         >
-          <Plus className="w-4 h-4" />
           <span>{t('createOrder')}</span>
         </button>
       </div>
 
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Total Orders Card */}
+        <div className="glass-card stats-card-blue p-5 rounded-3xl border border-white/5 flex items-center justify-between relative overflow-hidden transition-all duration-305 hover:translate-y-[-4px] group">
+          <div className="absolute top-0 left-0 right-0 h-[4px] bg-blue-500"></div>
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider block">{t('totalOrders') || 'Total Orders'}</span>
+            <h3 className="text-2xl font-black text-gray-800 dark:text-white tracking-tight">{orders.length}</h3>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500">Total orders in registry</p>
+          </div>
+          <div className="w-12 h-12 bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center transition-all duration-305 group-hover:scale-110">
+            <FileText className="w-6 h-6" />
+          </div>
+        </div>
+
+        {/* Pending Stitching Card */}
+        <div className="glass-card stats-card-amber p-5 rounded-3xl border border-white/5 flex items-center justify-between relative overflow-hidden transition-all duration-305 hover:translate-y-[-4px] group">
+          <div className="absolute top-0 left-0 right-0 h-[4px] bg-amber-500"></div>
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider block">{t('pendingStitching') || 'Pending Stitching'}</span>
+            <h3 className="text-2xl font-black text-amber-605 dark:text-amber-400 tracking-tight">
+              {orders.filter(o => o.status === 'Pending' || o.status === 'In Progress').length}
+            </h3>
+            <p className="text-[10px] text-gray-400 dark:text-gray-505">Awaiting tailor completion</p>
+          </div>
+          <div className="w-12 h-12 bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center transition-all duration-305 group-hover:scale-110">
+            <Clock className="w-6 h-6" />
+          </div>
+        </div>
+
+        {/* Total Receivables Card */}
+        <div className="glass-card stats-card-emerald p-5 rounded-3xl border border-white/5 flex items-center justify-between relative overflow-hidden transition-all duration-305 hover:translate-y-[-4px] group">
+          <div className="absolute top-0 left-0 right-0 h-[4px] bg-emerald-500"></div>
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider block">{t('remainingBalance') || 'Remaining Balance'}</span>
+            <h3 className="text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+              ₹{orders.reduce((sum, o) => sum + (o.balance_amount || 0), 0)}
+            </h3>
+            <p className="text-[10px] text-gray-400 dark:text-gray-505">Total unpaid balance</p>
+          </div>
+          <div className="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center transition-all duration-305 group-hover:scale-110">
+            <IndianRupee className="w-5.5 h-5.5" />
+          </div>
+        </div>
+      </div>
+
       {/* Filter Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         {/* Search */}
-        <div className="relative md:col-span-2">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-            <Search className="w-5 h-5" />
+        <div className="relative md:col-span-3">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-600 dark:text-gray-400">
+            <Search className="w-5 h-5" strokeWidth={3} />
           </span>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full glass-panel pl-10 pr-4 py-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500/50"
+            className="w-full glass-panel pl-10 pr-4 py-2.5 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:border-purple-500/50"
             placeholder="Search by customer name..."
           />
         </div>
@@ -217,7 +278,7 @@ export default function OrdersPage() {
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="glass-panel px-4 py-2.5 rounded-xl text-sm text-gray-300 focus:outline-none focus:border-purple-500/50 cursor-pointer"
+          className="glass-panel px-4 py-2.5 rounded-xl text-sm text-gray-800 dark:text-gray-300 focus:outline-none focus:border-purple-500/50 cursor-pointer"
         >
           <option value="" className="bg-gray-950 text-white">All Garments</option>
           <option value="shirt" className="bg-gray-950 text-white">{t('shirt')}</option>
@@ -231,7 +292,7 @@ export default function OrdersPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="glass-panel px-4 py-2.5 rounded-xl text-sm text-gray-300 focus:outline-none focus:border-purple-500/50 cursor-pointer"
+          className="glass-panel px-4 py-2.5 rounded-xl text-sm text-gray-800 dark:text-gray-300 focus:outline-none focus:border-purple-500/50 cursor-pointer"
         >
           <option value="" className="bg-gray-950 text-white">All Statuses</option>
           <option value="Pending" className="bg-gray-950 text-white">Pending</option>
@@ -241,7 +302,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Orders Table */}
-      <div className="glass-panel rounded-3xl border border-white/5 text-left overflow-hidden">
+      <div className="glass-panel rounded-3xl border border-white/5 text-left p-4 overflow-visible">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
@@ -253,61 +314,69 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left premium-table">
               <thead>
-                <tr className="border-b border-white/5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  <th className="px-6 py-4">{t('name')}</th>
-                  <th className="px-6 py-4">{t('clothType')}</th>
-                  <th className="px-6 py-4">{t('bookingAndDelivery')}</th>
-                  <th className="px-6 py-4">{t('totalAmount')}</th>
-                  <th className="px-6 py-4">{t('balanceAmount')}</th>
-                  <th className="px-6 py-4">{t('paymentStatus')}</th>
-                  <th className="px-6 py-4">{t('status')}</th>
-                  <th className="px-6 py-4 text-center">{t('actions')}</th>
+                <tr className="text-xs font-black text-gray-700 dark:text-gray-400 uppercase tracking-widest">
+                  <th className="px-6 pb-2">{t('name')}</th>
+                  <th className="px-6 pb-2">{t('clothType')}</th>
+                  <th className="px-6 pb-2">{t('bookingAndDelivery')}</th>
+                  <th className="px-6 pb-2">{t('totalAmount')}</th>
+                  <th className="px-6 pb-2">{t('balanceAmount')}</th>
+                  <th className="px-6 pb-2">{t('paymentStatus')}</th>
+                  <th className="px-6 pb-2">{t('status')}</th>
+                  <th className="px-6 pb-2 text-center">{t('actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-sm text-gray-300">
+              <tbody className="text-sm text-gray-750 dark:text-gray-300">
                 {filteredOrders.map((o) => (
-                  <tr key={o.id} className="hover:bg-white/5 transition-colors">
+                  <tr key={o.id} className="premium-table-row">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-white">{o.customer?.name || 'Customer'}</div>
-                      <div className="text-[10px] text-gray-500">{o.customer?.phone === '0000000000' ? t('notRegistered') : t('registered')}</div>
+                      <div className="font-extrabold text-gray-900 dark:text-white text-base tracking-tight">{o.customer?.name || 'Customer'}</div>
+                      <div className="text-[10px] font-bold mt-1">
+                        {o.customer?.phone === '0000000000' ? (
+                          <span className="text-gray-400 dark:text-gray-500">{t('notRegistered')}</span>
+                        ) : (
+                          <span className="text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/20 px-2 py-0.5 rounded-full border border-purple-100 dark:border-purple-900/30">{t('registered')}</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="capitalize">{t(o.cloth_type)}</div>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black capitalize border ${getGarmentBadge(o.cloth_type)}`}>
+                        {t(o.cloth_type)}
+                      </span>
                       {o.description && (
-                        <div className="text-xs text-gray-500 max-w-[200px] truncate" title={o.description}>
+                        <div className="text-xs text-gray-550 dark:text-gray-500 max-w-[200px] truncate mt-1" title={o.description}>
                           {o.description}
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 space-y-1">
+                    <td className="px-6 py-4 space-y-1.5">
                       <div className="text-[11px] text-gray-500 font-medium">
                         {t('booked')}: {o.order_date}
                       </div>
-                      <div className="flex items-center space-x-1.5 text-white font-semibold">
-                        <Calendar className="w-3.5 h-3.5 text-purple-400 font-bold" />
+                      <div className="flex items-center space-x-1.5 text-gray-800 dark:text-white font-extrabold">
+                        <Calendar className="w-3.5 h-3.5 text-purple-650 dark:text-purple-400 font-bold" strokeWidth={2.5} />
                         <span>{o.delivery_date}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-white">₹{o.total_amount}</td>
+                    <td className="px-6 py-4 font-black text-gray-900 dark:text-white text-base">₹{o.total_amount}</td>
                     <td className="px-6 py-4">
-                      <span className={`font-semibold ${o.balance_amount > 0 ? 'text-amber-400' : 'text-gray-400'}`}>
+                      <span className={`font-black text-base ${o.balance_amount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500'}`}>
                         ₹{o.balance_amount}
                       </span>
                     </td>
                     <td className="px-6 py-4 space-y-1">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        o.payment_status === 'Paid' ? 'bg-emerald-500/10 text-emerald-400' :
-                        o.payment_status === 'Partially Paid' ? 'bg-amber-500/10 text-amber-400' :
-                        'bg-red-500/10 text-red-400'
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${
+                        o.payment_status === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30' :
+                        o.payment_status === 'Partially Paid' ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30' :
+                        'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/30'
                       }`}>
                         {o.payment_status === 'Paid' ? t('paymentPaid') :
                          o.payment_status === 'Partially Paid' ? t('paymentPartiallyPaid') :
                          t('paymentPending')}
                       </span>
                       {o.transaction_id && (
-                        <div className="text-[10px] text-gray-500 block font-mono">
+                        <div className="text-[10px] text-gray-500 block font-mono mt-0.5">
                           TXN: {o.transaction_id}
                         </div>
                       )}
@@ -319,7 +388,7 @@ export default function OrdersPage() {
                         <select
                           value={o.status}
                           onChange={(e) => handleStatusChange(o.id, e.target.value)}
-                          className="bg-white/5 border border-white/10 hover:border-white/20 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none cursor-pointer"
+                          className={`border rounded-xl px-2.5 py-1.5 text-xs font-extrabold focus:outline-none cursor-pointer transition-all duration-200 ${getStatusSelectClass(o.status)}`}
                         >
                           <option value="Pending" className="bg-gray-950 text-white">Pending</option>
                           <option value="In Progress" className="bg-gray-950 text-white">In Progress</option>
@@ -331,20 +400,20 @@ export default function OrdersPage() {
                       {o.balance_amount > 0 ? (
                         <button
                           onClick={() => openPaymentModal(o)}
-                          className="bg-purple-600/10 hover:bg-purple-600/30 text-purple-400 rounded-xl px-3 py-1.5 text-xs font-bold transition flex items-center space-x-1 mx-auto cursor-pointer"
+                          className="bg-purple-600 hover:bg-purple-500 text-white rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-sm shadow-purple-650/10 flex items-center space-x-1 mx-auto cursor-pointer"
                         >
                           <PlusCircle className="w-3.5 h-3.5" />
                           <span>Record Payment</span>
                         </button>
                       ) : (
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                          <div className="text-xs text-gray-500 flex items-center justify-center space-x-1">
-                            <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-                            <span className="font-semibold text-emerald-500">Fully Paid</span>
+                          <div className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center justify-center space-x-1">
+                            <CheckCircle className="w-3.5 h-3.5 text-emerald-500" strokeWidth={2.5} />
+                            <span className="font-extrabold">Fully Paid</span>
                           </div>
                           <button
                             onClick={() => handleDeleteOrder(o.id)}
-                            className="bg-red-600/10 hover:bg-red-600/30 text-red-400 rounded-xl px-2.5 py-1 text-xs font-bold transition flex items-center space-x-1 cursor-pointer"
+                            className="bg-red-50 hover:bg-red-100 dark:bg-red-950/15 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 rounded-xl px-2.5 py-1 text-xs font-bold transition flex items-center space-x-1 cursor-pointer"
                             title="Remove order from order book"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -367,9 +436,9 @@ export default function OrdersPage() {
           <div className="glass-panel border border-white/5 p-6 rounded-3xl w-full max-w-lg text-left animate-fade-in relative">
             <button
               onClick={() => setShowAddModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white modal-close-btn"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" strokeWidth={4} />
             </button>
 
             <h3 className="text-xl font-bold text-white font-heading mb-4">{t('createOrder')}</h3>
@@ -505,9 +574,9 @@ export default function OrdersPage() {
           <div className="glass-panel border border-white/5 p-6 rounded-3xl w-full max-w-md text-left animate-fade-in relative">
             <button
               onClick={() => setShowPaymentModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white modal-close-btn"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" strokeWidth={4} />
             </button>
 
             <h3 className="text-xl font-bold text-white font-heading mb-4">{t('addInstallment')}</h3>

@@ -1,0 +1,225 @@
+﻿diff --git a/frontend/src/pages/Home.jsx b/frontend/src/pages/Home.jsx
+index 29669b9..5bc0bb3 100644
+--- a/frontend/src/pages/Home.jsx
++++ b/frontend/src/pages/Home.jsx
+@@ -1,6 +1,7 @@
+ import React, { useState, useEffect } from 'react';
+ import { useLanguage } from '../context/LanguageContext';
+ import { Scissors, Users, Calendar, Award, MessageSquare, ArrowRight, Sparkles, Sliders, Smartphone, Bell, Check, FileText, IndianRupee, BarChart3, Lock, Globe, ChevronDown, X } from 'lucide-react';
++import RollingGlobe from '../components/RollingGlobe';
+ 
+ export default function Home({ onNavigate }) {
+   const { t, language, changeLanguage } = useLanguage();
+@@ -332,7 +333,7 @@ export default function Home({ onNavigate }) {
+             
+             <h1 className="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-none">
+               {t('heroTitle')} <br />
+-              {t('withText')} <span className="gradient-text font-black">{t('appName')}</span>
++              <span className="gradient-text font-black">{t('heroTitleAccent')}</span>
+             </h1>
+             
+             <p className="text-gray-400 text-lg leading-relaxed max-w-lg">
+@@ -359,199 +360,10 @@ export default function Home({ onNavigate }) {
+             </div>
+           </div>
+ 
+-          {/* Right Column: Live Interactive Sandbox Widget */}
+-          <div id="demo-widget" className="lg:col-span-7 flex flex-col sm:flex-row gap-6 items-stretch w-full">
+-            
+-            {/* Sub-Widget 1: Tailor's Order Workspace Profile */}
+-            <div className={`flex-grow flex flex-col justify-between glass-card p-6 rounded-3xl border border-white/5 relative overflow-hidden transition-all duration-500 ${
+-              orderStatus === 0 ? 'active-card-booked' :
+-              orderStatus === 1 ? 'active-card-stitching' :
+-              'active-card-ready'
+-            }`}>
+-              
+-              {/* Stitch design line running in background */}
+-              <div className="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none">
+-                <svg viewBox="0 0 100 100" className="w-full h-full text-purple-500">
+-                  <path d="M10,10 C40,40 20,70 90,90" fill="none" stroke="currentColor" strokeWidth="2" className="animate-stitch-flow" />
+-                </svg>
+-              </div>
+-
+-              <div className="space-y-4">
+-                <div className="flex justify-between items-start">
+-                  <div className="space-y-1">
+-                    <span className="text-[10px] bg-purple-500/10 text-purple-400 font-bold px-2 py-0.5 rounded border border-purple-500/20 uppercase tracking-widest">Order #2085</span>
+-                    <h4 className="text-white font-extrabold text-lg mt-1">{t('stichesSaved').includes('αñæαñ░αÑìαñíαñ░') ? 'αñåαñ░αñ╡ αñ╢αñ░αÑìαñ«αñ╛' : 'Aarav Sharma'}</h4>
+-                  </div>
+-                  <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider transition-all duration-300 flex items-center space-x-1.5 ${
+-                    orderStatus === 0 ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+-                    orderStatus === 1 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+-                    'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+-                  }`}>
+-                    <span className={`w-1.5 h-1.5 rounded-full ${
+-                      orderStatus === 0 ? 'bg-blue-400' : orderStatus === 1 ? 'bg-amber-400' : 'bg-emerald-400'
+-                    } animate-ping`}></span>
+-                    <span>{orderStatus === 0 ? t('booked') : orderStatus === 1 ? t('statusPending') : t('statusCompleted')}</span>
+-                  </span>
+-                </div>
+-
+-                {/* Measurements with Custom Sliders */}
+-                <div className="space-y-4 pt-2">
+-                  <p className="text-[10px] text-purple-400 uppercase font-bold tracking-widest flex items-center space-x-1.5 border-b border-white/5 pb-1.5">
+-                    <Sliders className="w-3.5 h-3.5" />
+-                    <span>{t('previewDashboard')}</span>
+-                  </p>
+-                  
+-                  {/* Chest Slider */}
+-                  <div className="space-y-1">
+-                    <div className="flex justify-between text-[11px]">
+-                      <span className="text-gray-400 font-medium">{t('chest').split(' ')[0]}</span>
+-                      <span className="text-white font-bold">{chest}"</span>
+-                    </div>
+-                    <input 
+-                      type="range" 
+-                      min="30" 
+-                      max="50" 
+-                      value={chest} 
+-                      onChange={(e) => setChest(parseInt(e.target.value))}
+-                      className="custom-slider"
+-                    />
+-                  </div>
+-
+-                  {/* Waist Slider */}
+-                  <div className="space-y-1">
+-                    <div className="flex justify-between text-[11px]">
+-                      <span className="text-gray-400 font-medium">{t('waist').split(' ')[0]}</span>
+-                      <span className="text-white font-bold">{waist}"</span>
+-                    </div>
+-                    <input 
+-                      type="range" 
+-                      min="28" 
+-                      max="48" 
+-                      value={waist} 
+-                      onChange={(e) => setWaist(parseInt(e.target.value))}
+-                      className="custom-slider"
+-                    />
+-                  </div>
+-                </div>
+-              </div>
+-
+-              {/* Progress Bar steps */}
+-              <div className="space-y-2 pt-6">
+-                <div className="flex justify-between text-[9px] text-gray-500 uppercase font-bold tracking-wider px-1">
+-                  <span>{t('booked')}</span>
+-                  <span>{t('statusPending')}</span>
+-                  <span>{t('statusCompleted')}</span>
+-                </div>
+-                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
+-                  <div className={`h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500 ${
+-                    orderStatus === 0 ? 'w-[15%]' : orderStatus === 1 ? 'w-[55%]' : 'w-full'
+-                  }`}></div>
+-                </div>
+-              </div>
+-
+-              {/* Status control */}
+-              <div className="pt-5 flex flex-col gap-2 relative z-10">
+-                <button 
+-                  onClick={() => setOrderStatus((prev) => (prev + 1) % 3)}
+-                  className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white py-2.5 rounded-xl text-xs font-bold transition cursor-pointer"
+-                >
+-                  Step Order Status
+-                </button>
+-                <button 
+-                  onClick={triggerWhatsappSimulation}
+-                  className="w-full bg-purple-600 hover:bg-purple-500 text-white py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center space-x-1.5 shadow-lg shadow-purple-600/20 hover:shadow-purple-600/35 cursor-pointer"
+-                >
+-                  <Bell className="w-3.5 h-3.5" />
+-                  <span>{t('simulateWhatsApp')}</span>
+-                </button>
+-              </div>
+-            </div>
+-
+-            {/* Sub-Widget 2: Customer Mobile Alert Mockup */}
+-            <div className="w-full sm:w-64 bg-gray-900 border-[7px] border-gray-800 rounded-[36px] shadow-2xl overflow-hidden flex flex-col items-stretch shrink-0 relative border-t-[8px]">
+-              
+-              {/* Dynamic Island Camera Notch */}
+-              <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-4 bg-gray-950 rounded-full z-40 flex justify-center items-center">
+-                <div className="w-2.5 h-2.5 bg-gray-900 rounded-full border border-gray-950"></div>
+-              </div>
+-
+-              {/* Side buttons */}
+-              <div className="absolute left-[-9px] top-16 w-[2px] h-10 bg-gray-700 rounded-r z-10"></div>
+-              <div className="absolute left-[-9px] top-28 w-[2px] h-10 bg-gray-700 rounded-r z-10"></div>
+-              <div className="absolute right-[-9px] top-20 w-[2px] h-12 bg-gray-700 rounded-l z-10"></div>
+-
+-              {/* Simulated push notification overlay banner */}
+-              {showPushBanner && (
+-                <div className="absolute top-7 inset-x-2 bg-gray-950/95 backdrop-blur border border-white/10 rounded-2xl p-2.5 flex items-center space-x-3 z-50 shadow-2xl animate-push-banner">
+-                  <div className="p-1.5 bg-purple-600/20 border border-purple-500/30 rounded-lg text-purple-400">
+-                    <Scissors className="w-3.5 h-3.5" />
+-                  </div>
+-                  <div className="flex-grow text-left">
+-                    <div className="flex justify-between items-center">
+-                      <span className="text-[9px] font-bold text-white">{t('appName')}</span>
+-                      <span className="text-[7px] text-gray-500">now</span>
+-                    </div>
+-                    <p className="text-[8px] text-gray-300 font-medium leading-tight mt-0.5">
+-                      Order #2085 is {orderStatus === 0 ? 'Booked' : orderStatus === 1 ? 'Stitched' : 'Ready! Remaining Balance: Γé╣450.'}
+-                    </p>
+-                  </div>
+-                </div>
+-              )}
+-
+-              {/* Screen Content */}
+-              <div className="flex-grow whatsapp-wallpaper pt-6 p-3 flex flex-col justify-between min-h-[340px] relative">
+-                
+-                {/* Chat Header */}
+-                <div className="flex items-center space-x-2 bg-[#1f2c34]/90 backdrop-blur-md rounded-2xl p-2.5 border border-white/5 shadow-md mb-3">
+-                  <div className="w-7 h-7 rounded-full bg-purple-600/25 border border-purple-500/35 flex items-center justify-center text-purple-400 font-bold text-[10px]">
+-                    <Scissors className="w-3.5 h-3.5" />
+-                  </div>
+-                  <div className="text-left flex-grow">
+-                    <p className="text-white text-[10px] font-bold leading-tight">{t('appName')}</p>
+-                    <p className="text-emerald-400 text-[8px] leading-none mt-0.5">online</p>
+-                  </div>
+-                </div>
+-
+-                {/* Message Log */}
+-                <div className="flex-grow space-y-2.5 overflow-y-auto text-[9px] leading-relaxed flex flex-col justify-end">
+-                  
+-                  {/* Digital Profile Welcome Bubble */}
+-                  <div className="bg-[#1f2c34] text-gray-300 p-2.5 rounded-2xl rounded-tl-none max-w-[85%] self-start border border-white/5 shadow relative">
+-                    Welcome to <span className="text-purple-400 font-semibold">{t('appName')}</span>! Your measurement profile has been digitized.
+-                  </div>
+-
+-                  {/* Simulated WhatsApp Notification Bubble */}
+-                  {whatsappSent && !notificationDismissed && (
+-                    <div className="bg-[#005c4b] text-white p-2.5 rounded-2xl rounded-tr-none max-w-[90%] self-end shadow-lg border border-white/5 animate-notification relative">
+-                      <p className="font-bold text-[8px] text-emerald-300 tracking-wider uppercase">WhatsApp Alert</p>
+-                      <p className="mt-1 text-white font-medium text-[9px]">
+-                        {language === 'en' ? `Hi Aarav, your order status is: ${orderStatus === 0 ? 'Order Created' : orderStatus === 1 ? 'Stitching Started' : 'Ready for collection! Please pay remaining balance.'}` :
+-                         language === 'hi' ? `αñ¿αñ«αñ╕αÑìαññαÑç αñåαñ░αñ╡, αñåαñ¬αñòαñ╛ αñåαñ░αÑìαñíαñ░ αñ╕αÑìαñƒαÑçαñƒαñ╕ αñ╣αÑê: ${orderStatus === 0 ? 'αñæαñ░αÑìαñíαñ░ αñ¼αñ¿αñ╛αñ»αñ╛ αñùαñ»αñ╛' : orderStatus === 1 ? 'αñ╕αñ┐αñ▓αñ╛αñê αñ╢αÑüαñ░αÑé' : 'αññαÑêαñ»αñ╛αñ░ αñ╣αÑê! αñòαÑâαñ¬αñ»αñ╛ αñ╢αÑçαñ╖ αñ░αñ╛αñ╢αñ┐ αñòαñ╛ αñ¡αÑüαñùαññαñ╛αñ¿ αñòαñ░αÑçαñéαÑñ'}` :
+-                         `α░¿α░«α░╕α▒ìα░ñα▒ç α░åα░░α░╡α▒ì, α░«α▒Ç α░åα░░α▒ìα░íα░░α▒ì α░╕α▒ìα░Ñα░┐α░ñα░┐: ${orderStatus === 0 ? 'α░åα░░α▒ìα░íα░░α▒ì α░¼α▒üα░òα▒ì α░Üα▒çα░»α░¼α░íα░┐α░éα░ªα░┐' : orderStatus === 1 ? 'α░òα▒üα░ƒα▒ìα░ƒα▒üα░¬α░¿α░┐ α░«α▒èα░ªα░▓α▒êα░éα░ªα░┐' : 'α░ñα▒Çα░╕α▒üα░òα▒ïα░╡α░íα░╛α░¿α░┐α░òα░┐ α░╕α░┐α░ªα▒ìα░ºα░éα░ùα░╛ α░ëα░éα░ªα░┐! α░¼α▒ìα░»α░╛α░▓α▒åα░¿α▒ìα░╕α▒ì α░¬α▒çα░«α▒åα░éα░ƒα▒ì α░Üα▒çα░»α░éα░íα░┐.'}`}
+-                      </p>
+-                      <div className="flex justify-between items-center mt-1 pt-1 border-t border-white/5 text-[7px] text-white/50">
+-                        <span>Chest: {chest}" | Waist: {waist}"</span>
+-                        <span className="flex items-center space-x-0.5">
+-                          <span>Just now</span>
+-                          <Check className="w-2.5 h-2.5 text-emerald-400" />
+-                        </span>
+-                      </div>
+-                    </div>
+-                  )}
+-                </div>
+-
+-                {/* Simulated Input */}
+-                <div className="bg-[#1f2c34] text-gray-500 rounded-full px-3 py-1.5 mt-3 text-[9px] flex justify-between items-center border border-white/5">
+-                  <span>Type message...</span>
+-                  <div className="w-4 h-4 bg-emerald-600 rounded-full flex items-center justify-center text-white text-[8px] cursor-pointer hover:bg-emerald-500">Γ£ô</div>
+-                </div>
+-
+-                {/* Home Indicator bar */}
+-                <div className="w-16 h-1 bg-white/20 rounded-full mx-auto mt-2"></div>
+-
+-              </div>
+-            </div>
+-
++          {/* Right Column: 3D Rolling Globe Visual Mockup */}
++          <div className="lg:col-span-7 flex items-center justify-center relative w-full select-none z-10 lg:pl-10">
++            <div className="absolute top-[25%] left-[25%] right-[25%] bottom-[5%] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
++            <RollingGlobe />
+           </div>
+         </div>
+ 

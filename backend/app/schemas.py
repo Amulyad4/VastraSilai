@@ -116,6 +116,7 @@ class CustomerResponse(BaseModel):
     created_at: datetime
     measurements: Optional[MeasurementResponse] = None
     order_count: int = 0
+    lifetime_spending: float = 0.0
 
     class Config:
         from_attributes = True

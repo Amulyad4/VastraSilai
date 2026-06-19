@@ -37,6 +37,10 @@ class Customer(Base):
     def order_count(self) -> int:
         return len(self.orders) if self.orders else 0
 
+    @property
+    def lifetime_spending(self) -> float:
+        return sum(o.total_amount for o in self.orders) if self.orders else 0.0
+
 
 class Measurement(Base):
     __tablename__ = "measurements"

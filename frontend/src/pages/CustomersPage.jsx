@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
 import { useLanguage } from '../context/LanguageContext';
-import { Plus, Search, User, Phone, MapPin, Mail, Upload, Edit, Save, X, BookOpen, Ruler, ArrowLeft, Trash2 } from 'lucide-react';
+import { Plus, Search, User, Phone, MapPin, Mail, Upload, Edit, Save, X, BookOpen, Ruler, ArrowLeft, Trash2, Image } from 'lucide-react';
 import { API_URL } from '../context/AuthContext';
 
 export default function CustomersPage() {
@@ -201,9 +201,9 @@ export default function CustomersPage() {
         <div className="glass-panel border border-white/5 p-6 rounded-3xl w-full max-w-md text-left animate-fade-in relative">
           <button
             onClick={() => setShowEditModal(false)}
-            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            className="absolute top-4 right-4 text-gray-400 hover:text-white modal-close-btn"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" strokeWidth={4} />
           </button>
 
           <h3 className="text-xl font-bold text-white font-heading mb-4">{t('editCustomer')}</h3>
@@ -291,35 +291,51 @@ export default function CustomersPage() {
       <div className="space-y-6 animate-fade-in text-left">
         <button
           onClick={() => setSelectedCustomer(null)}
-          className="flex items-center space-x-2 text-gray-400 hover:text-white font-medium transition cursor-pointer mb-4"
+          className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 dark:text-gray-400 dark:hover:text-white font-semibold transition cursor-pointer mb-4 group back-to-list-btn"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-purple-600 dark:text-gray-400 dark:group-hover:text-white transition-colors" />
           <span>Back to Customer List</span>
         </button>
 
         {/* Top Header Card */}
-        <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-purple-600/10 border border-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center font-heading font-extrabold text-2xl">
+        <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+          {/* Subtle colored accent top border */}
+          <div className="absolute top-0 left-0 right-0 h-[5px] bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500"></div>
+
+          <div className="flex items-center space-x-5">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center font-heading font-extrabold text-2xl shadow-lg shadow-purple-500/15 border border-purple-400/20">
               {selectedCustomer.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white font-heading">{selectedCustomer.name}</h2>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5 text-sm text-gray-400">
+              <h2 className="text-2xl font-black text-gray-800 dark:text-white font-heading">{selectedCustomer.name}</h2>
+              <div className="flex flex-wrap items-center gap-3 mt-2">
                 {selectedCustomer.phone !== '0000000000' && (
-                  <span className="flex items-center text-purple-400 font-semibold">{t('phone')}: {selectedCustomer.phone}</span>
+                  <span className="bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 px-3 py-1 rounded-full text-xs font-bold border border-purple-100 dark:border-purple-900/30 flex items-center">
+                    <Phone className="w-3.5 h-3.5 mr-1.5" strokeWidth={2.5} />
+                    {selectedCustomer.phone}
+                  </span>
                 )}
-                {selectedCustomer.gender && <span className="capitalize">{t('gender')}: {t(selectedCustomer.gender === 'Male' ? 'genderMale' : selectedCustomer.gender === 'Female' ? 'genderFemale' : 'genderOther')}</span>}
-                {selectedCustomer.email && <span>{t('email')}: {selectedCustomer.email}</span>}
+                {selectedCustomer.gender && (
+                  <span className="capitalize bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-xs font-bold border border-blue-100 dark:border-blue-900/30 flex items-center">
+                    <User className="w-3.5 h-3.5 mr-1.5" strokeWidth={2.5} />
+                    {t(selectedCustomer.gender === 'Male' ? 'genderMale' : selectedCustomer.gender === 'Female' ? 'genderFemale' : 'genderOther')}
+                  </span>
+                )}
+                {selectedCustomer.email && (
+                  <span className="bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 dark:border-indigo-900/30 flex items-center">
+                    <Mail className="w-3.5 h-3.5 mr-1.5" strokeWidth={2.5} />
+                    {selectedCustomer.email}
+                  </span>
+                )}
               </div>
             </div>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex space-x-3.5">
             <button
               onClick={() => openEditModal(selectedCustomer)}
-              className="bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl px-4 py-2 text-sm font-semibold flex items-center space-x-1.5 transition cursor-pointer"
+              className="bg-purple-600 hover:bg-purple-500 text-white rounded-xl px-5 py-2.5 text-sm font-bold flex items-center space-x-1.5 shadow-md shadow-purple-600/10 transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
-              <Edit className="w-4 h-4" />
+              <Edit className="w-4 h-4" strokeWidth={2.5} />
               <span>{t('edit')}</span>
             </button>
             <button
@@ -327,9 +343,9 @@ export default function CustomersPage() {
                 handleDeleteCustomer(selectedCustomer.id);
                 setSelectedCustomer(null);
               }}
-              className="bg-red-600/10 border border-red-500/20 hover:bg-red-600/20 text-red-400 rounded-xl px-4 py-2 text-sm font-semibold flex items-center space-x-1.5 transition cursor-pointer"
+              className="bg-red-50 hover:bg-red-100 dark:bg-red-950/15 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 rounded-xl px-5 py-2.5 text-sm font-bold flex items-center space-x-1.5 transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" strokeWidth={2.5} />
               <span>Remove</span>
             </button>
           </div>
@@ -338,33 +354,37 @@ export default function CustomersPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Column 1 & 2: Measurements */}
-          <div className="lg:col-span-2 glass-panel p-6 rounded-3xl border border-white/5 flex flex-col space-y-6">
-            <div className="flex justify-between items-center pb-4 border-b border-white/5">
+          <div className="lg:col-span-2 glass-panel p-6 rounded-3xl border border-white/5 flex flex-col space-y-6 relative overflow-hidden">
+            {/* Subtle colored accent top border */}
+            <div className="absolute top-0 left-0 right-0 h-[5px] bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500"></div>
+
+            <div className="flex justify-between items-center pb-4 border-b border-white/5 pt-2">
               <div className="flex items-center space-x-2">
-                <Ruler className="w-5 h-5 text-purple-400" />
-                <h3 className="text-lg font-bold text-white font-heading">{t('measurementsTitle')}</h3>
+                <Ruler className="w-5 h-5 text-purple-600 dark:text-purple-400" strokeWidth={2.5} />
+                <h3 className="text-lg font-black text-gray-800 dark:text-white font-heading">{t('measurementsTitle')}</h3>
               </div>
               
               {!isEditingMeasurements ? (
                 <button
                   onClick={() => setIsEditingMeasurements(true)}
-                  className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold rounded-xl px-4 py-2 transition"
+                  className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl px-5 py-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-md shadow-purple-600/10 flex items-center space-x-1.5 cursor-pointer"
                 >
-                  {t('edit')}
+                  <Edit className="w-3.5 h-3.5" strokeWidth={2.5} />
+                  <span>{t('edit')}</span>
                 </button>
               ) : (
                 <div className="flex space-x-2">
                   <button
                     onClick={() => setIsEditingMeasurements(false)}
-                    className="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold rounded-xl px-4 py-2 transition"
+                    className="text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-white bg-purple-600/5 hover:bg-purple-600/10 dark:bg-white/5 dark:hover:bg-white/10 border border-purple-500/10 hover:border-purple-500/30 dark:border-white/5 dark:hover:border-purple-500/20 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer"
                   >
                     {t('cancel')}
                   </button>
                   <button
                     onClick={saveMeasurements}
-                    className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold rounded-xl px-4 py-2 transition flex items-center space-x-1"
+                    className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl px-4 py-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 flex items-center space-x-1 shadow-sm shadow-purple-600/10 cursor-pointer"
                   >
-                    <Save className="w-3.5 h-3.5" />
+                    <Save className="w-3.5 h-3.5" strokeWidth={2.5} />
                     <span>{t('save')}</span>
                   </button>
                 </div>
@@ -388,18 +408,18 @@ export default function CustomersPage() {
                 { key: 'neck', label: t('neck') },
                 { key: 'hip', label: t('hip') }
               ].map(field => (
-                <div key={field.key} className="space-y-1 bg-white/5 p-3 rounded-xl border border-white/5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{field.label}</label>
+                <div key={field.key} className="measurement-card space-y-1.5 p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.02]">
+                  <label className="measurement-label text-[11px] font-black uppercase tracking-wider block mb-1">{field.label}</label>
                   {isEditingMeasurements ? (
                     <input
                       type="number"
                       step="0.1"
                       value={measurements[field.key] || ''}
                       onChange={(e) => setMeasurements({ ...measurements, [field.key]: parseFloat(e.target.value) || 0 })}
-                      className="w-full bg-gray-900/60 border border-white/10 focus:border-purple-500 rounded-lg px-2 py-1 text-white text-base text-center"
+                      className="measurement-input w-full rounded-xl px-2 py-2 text-base font-bold text-center transition-all focus:outline-none placeholder-gray-400"
                     />
                   ) : (
-                    <div className="text-xl font-bold text-white tracking-tight mt-1 text-center">
+                    <div className="text-xl font-black text-gray-800 dark:text-white tracking-tight mt-1 text-center">
                       {measurements[field.key] ? `${measurements[field.key]}"` : '-'}
                     </div>
                   )}
@@ -409,17 +429,17 @@ export default function CustomersPage() {
 
             {/* Notes Section */}
             <div className="space-y-2 text-left">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('notes')}</label>
+              <label className="measurement-label text-xs font-black uppercase tracking-wider block mb-1.5">{t('notes')}</label>
               {isEditingMeasurements ? (
                 <textarea
                   value={measurements.notes || ''}
                   onChange={(e) => setMeasurements({ ...measurements, notes: e.target.value })}
                   rows="3"
                   placeholder="Insert customer requirements, neck styles, sleeve cuts, buttons preference..."
-                  className="w-full bg-gray-900/60 border border-white/10 focus:border-purple-500 rounded-xl px-4 py-2.5 text-white text-sm"
+                  className="measurement-textarea w-full rounded-2xl px-4 py-3 text-sm transition-all focus:outline-none placeholder-gray-400"
                 />
               ) : (
-                <div className="bg-white/5 border border-white/5 rounded-2xl p-4 text-sm text-gray-300 min-h-[80px]">
+                <div className="measurement-card border rounded-2xl p-4.5 text-sm text-gray-700 dark:text-gray-300 min-h-[80px] transition-all duration-300">
                   {measurements.notes || 'No design notes logged.'}
                 </div>
               )}
@@ -427,12 +447,12 @@ export default function CustomersPage() {
 
             {/* Reference Image Uploader */}
             <div className="space-y-3 text-left pt-2">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('referenceImage')}</label>
+              <label className="measurement-label text-xs font-black uppercase tracking-wider block mb-1.5">{t('referenceImage')}</label>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
                 {/* Upload Action */}
-                <div className="border-2 border-dashed border-white/10 hover:border-purple-500/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition relative">
+                <div className="measurement-card border-2 border-dashed border-purple-500/20 hover:border-purple-500/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition relative hover:scale-[1.01] duration-300">
                   <input
                     type="file"
                     accept="image/*"
@@ -443,23 +463,23 @@ export default function CustomersPage() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <span className="text-sm font-semibold text-white">{t('uploadBtn')}</span>
+                      <Upload className="w-8 h-8 text-purple-500 dark:text-gray-400 mb-2" strokeWidth={2.5} />
+                      <span className="text-sm font-bold text-gray-850 dark:text-white">{t('uploadBtn')}</span>
                       <span className="text-[10px] text-gray-500 mt-1">{t('uploadPlaceholder')}</span>
                     </>
                   )}
                 </div>
 
                 {/* Image Display */}
-                <div className="bg-white/5 border border-white/5 rounded-2xl p-2 flex items-center justify-center h-40 relative overflow-hidden">
+                <div className="measurement-card border rounded-2xl p-2 flex items-center justify-center h-40 relative overflow-hidden transition-all duration-300">
                   {measurements.reference_image_url ? (
                     <img
                       src={measurements.reference_image_url}
                       alt="Design Reference Sketch"
-                      className="max-h-full object-contain rounded-lg"
+                      className="max-h-full object-contain rounded-lg shadow-sm"
                     />
                   ) : (
-                    <span className="text-xs text-gray-600">No Reference Sketch</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-650">No Reference Sketch</span>
                   )}
                 </div>
 
@@ -470,7 +490,7 @@ export default function CustomersPage() {
           {/* Column 3: Customer History Log */}
           <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col space-y-6">
             <div className="flex items-center space-x-2 pb-4 border-b border-white/5">
-              <BookOpen className="w-5 h-5 text-purple-400" />
+              <BookOpen className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               <h3 className="text-lg font-bold text-white font-heading">{t('orderHistory')}</h3>
             </div>
 
@@ -479,17 +499,15 @@ export default function CustomersPage() {
             ) : (
               <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
                 {orders.map(o => (
-                  <div key={o.id} className="bg-white/5 border border-white/5 p-4 rounded-xl space-y-2">
+                  <div key={o.id} className="bg-purple-600/5 dark:bg-white/5 border border-purple-500/5 dark:border-white/5 p-4 rounded-2xl space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-bold text-white capitalize">{t(o.cloth_type)}</span>
-                      <span className={`inline-flex px-2 py-0.5 text-[10px] font-bold rounded-full ${
-                        o.status === 'Delivered' ? 'bg-blue-500/10 text-blue-400' :
-                        o.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400' :
-                        'bg-amber-500/10 text-amber-400'
+                      <span className="text-sm font-bold text-gray-800 dark:text-white capitalize">{t(o.cloth_type)}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        o.status === 'Ready' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' :
+                        o.status === 'In Progress' ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400' :
+                        'bg-gray-500/10 text-gray-500 dark:text-gray-400'
                       }`}>
-                        {o.status === 'Delivered' ? t('statusDelivered') :
-                         o.status === 'Completed' ? t('statusCompleted') :
-                         t('statusPending')}
+                        {o.status}
                       </span>
                     </div>
 
@@ -522,33 +540,31 @@ export default function CustomersPage() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      
-      {/* Header section */}
+       {/* Header section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="font-heading text-3xl font-extrabold text-white tracking-tight">{t('customerList')}</h2>
-          <p className="text-gray-400 text-sm">Create and browse customer measurements</p>
+          <h2 className="font-heading text-3xl font-extrabold text-white tracking-tight">{t('customers')}</h2>
+          <p className="text-gray-400 text-sm">Build lasting relationships with every stitch.</p>
         </div>
         <button
           onClick={() => { clearForm(); setShowAddModal(true); }}
-          className="neon-btn text-white rounded-xl px-5 py-2.5 text-sm font-bold flex items-center space-x-1.5 shadow-lg shadow-purple-950/20"
+          className="bg-purple-600 hover:bg-purple-500 text-white rounded-full px-8 py-3.5 text-base font-extrabold flex items-center shadow-lg shadow-purple-600/20 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
           <span>{t('addCustomer')}</span>
         </button>
       </div>
 
-      {/* Search Bar & Stats */}
-      <div className="relative">
-        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-          <Search className="w-5 h-5" />
+      {/* Search Bar */}
+      <div className="relative max-w-3xl">
+        <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-600 dark:text-gray-400">
+          <Search className="w-4.5 h-4.5" strokeWidth={3} />
         </span>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full glass-panel pl-10 pr-4 py-3 rounded-2xl text-base text-white border border-white/5 placeholder-gray-500 focus:outline-none focus:border-purple-500/50"
-          placeholder={t('searchPlaceholder')}
+          className="w-full glass-panel pl-11 pr-4 py-3 rounded-full text-base text-gray-800 dark:text-white border border-purple-500/10 focus:border-purple-500/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/10 shadow-sm shadow-purple-600/5 transition-all"
+          placeholder="Search by name or mobile..."
         />
       </div>
 
@@ -575,77 +591,41 @@ export default function CustomersPage() {
               <div
                 key={c.id}
                 onClick={() => viewCustomerDetails(c)}
-                className="glass-panel p-6 rounded-3xl border border-white/5 hover:border-purple-500/35 transition duration-300 flex flex-col justify-between cursor-pointer group hover:shadow-xl hover:shadow-purple-950/5"
+                className="glass-card customer-card p-8 rounded-3xl border border-white/5 hover:border-purple-500/35 transition duration-300 flex flex-col justify-between cursor-pointer group hover:shadow-xl hover:shadow-purple-950/5 relative overflow-hidden min-h-[140px]"
               >
-                <div>
-                  {/* Top: Avatar, Name & Phone, Actions */}
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex items-center space-x-3.5 min-w-0">
-                      <div className="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center font-heading font-extrabold text-base flex-shrink-0 shadow-md shadow-purple-900/10">
-                        {initials}
-                      </div>
-                      <div className="min-w-0">
-                        <h4 className="text-base font-bold text-white font-heading truncate group-hover:text-purple-400 transition-colors">
+                {/* Top blue accent border line */}
+                <div className="absolute top-0 left-0 right-0 h-[6px] bg-[#2563eb] dark:bg-[#3b82f6]"></div>
+
+                <div className="space-y-4">
+                  {/* Top: Avatar, Name & Phone */}
+                  <div className="flex items-center space-x-4.5 min-w-0">
+                    <div className="w-14 h-14 rounded-full bg-purple-600 text-white flex items-center justify-center font-heading font-extrabold text-lg flex-shrink-0 shadow-md shadow-purple-600/10">
+                      {initials}
+                    </div>
+                    <div className="min-w-0 flex-grow">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="text-lg font-black text-gray-800 dark:text-white font-heading truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                           {c.name}
                         </h4>
-                        <p className="text-xs text-gray-400 flex items-center mt-1 font-medium">
-                          <Phone className="w-3.5 h-3.5 mr-1 text-purple-400 flex-shrink-0" />
-                          <span>{c.phone === '0000000000' ? '-' : c.phone}</span>
-                        </p>
+                        {c.order_count >= 5 && (
+                          <span className="text-[10px] bg-purple-100 dark:bg-purple-500/25 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                            VIP
+                          </span>
+                        )}
                       </div>
-                    </div>
-
-                    {/* Quick Action Buttons */}
-                    <div className="flex items-center space-x-1 flex-shrink-0">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openEditModal(c);
-                        }}
-                        className="p-1.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl border border-transparent hover:border-white/5 transition cursor-pointer"
-                        title={t('edit')}
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteCustomer(c.id);
-                        }}
-                        className="p-1.5 text-red-400/85 hover:text-red-400 hover:bg-red-500/10 rounded-xl border border-transparent hover:border-red-500/5 transition cursor-pointer"
-                        title="Remove customer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <p className="text-sm text-gray-400 flex items-center mt-1.5 font-semibold">
+                        <Phone className="w-4 h-4 mr-1 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                        <span>{c.phone === '0000000000' ? '-' : c.phone}</span>
+                      </p>
                     </div>
                   </div>
 
-                  {/* Info Row: Email/Address details if they exist */}
-                  {(c.address || c.email) && (
-                    <div className="mt-4 pt-4 border-t border-white/5 space-y-1.5 text-xs text-gray-400">
-                      {c.address && (
-                        <p className="flex items-start">
-                          <MapPin className="w-3.5 h-3.5 mr-1 text-gray-500 flex-shrink-0 mt-0.5" />
-                          <span className="truncate">{c.address}</span>
-                        </p>
-                      )}
-                      {c.email && (
-                        <p className="flex items-center">
-                          <Mail className="w-3.5 h-3.5 mr-1 text-gray-500 flex-shrink-0" />
-                          <span className="truncate">{c.email}</span>
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Stats: Orders */}
-                <div className="mt-5 pt-4 border-t border-white/5">
-                  <div className="bg-white/5 px-4 py-2.5 rounded-2xl border border-white/5 flex items-center justify-between">
-                    <span className="text-[10px] font-extrabold text-gray-500 uppercase tracking-wider">
-                      {t('orders')}
+                  {/* Single Stat: Orders */}
+                  <div className="bg-purple-50/80 dark:bg-white/5 border border-purple-100 dark:border-white/5 px-4 py-2.5 rounded-2xl flex items-center justify-between mt-3">
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Orders
                     </span>
-                    <span className="text-lg font-extrabold text-white">
+                    <span className="bg-purple-600 text-white text-xs font-black px-3.5 py-1 rounded-full shadow-sm shadow-purple-600/10">
                       {c.order_count || 0}
                     </span>
                   </div>
@@ -662,9 +642,9 @@ export default function CustomersPage() {
           <div className="glass-panel border border-white/5 p-6 rounded-3xl w-full max-w-md text-left animate-fade-in relative">
             <button
               onClick={() => setShowAddModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white modal-close-btn"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" strokeWidth={4} />
             </button>
 
             <h3 className="text-xl font-bold text-white font-heading mb-4">{t('addCustomer')}</h3>
