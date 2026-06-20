@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-const API_URL = '/api';
+const API_URL = 'https://vastrasilai.onrender.com/api';
 
 const getErrorMessage = (err) => {
   const detail = err.response?.data?.detail;
